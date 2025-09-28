@@ -190,6 +190,168 @@
                         <!-- Profile content will be loaded here -->
                     </div>
                 </section>
+
+                <!-- Login Section -->
+                <section id="login-section" class="section">
+                    <div class="auth-container">
+                        <div class="auth-card">
+                            <div class="auth-header">
+                                <img src="/logo.svg" alt="AutoMarket" class="auth-logo">
+                                <h2>Iniciar Sesión</h2>
+                                <p>Accede a tu cuenta de AutoMarket</p>
+                            </div>
+                            
+                            <form id="login-form" class="auth-form">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-input" name="email" required 
+                                           placeholder="tu@email.com">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Contraseña</label>
+                                    <input type="password" class="form-input" name="password" required 
+                                           placeholder="••••••••">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary auth-btn">
+                                    Iniciar Sesión
+                                </button>
+                            </form>
+                            
+                            <div class="auth-footer">
+                                <p>¿No tenés cuenta? <a href="#" onclick="showRegister()">Crear cuenta</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Register Section -->
+                <section id="register-section" class="section">
+                    <div class="auth-container">
+                        <div class="auth-card">
+                            <div class="auth-header">
+                                <img src="/logo.svg" alt="AutoMarket" class="auth-logo">
+                                <h2>Crear Cuenta</h2>
+                                <p>Únete a AutoMarket por solo $2 USD</p>
+                            </div>
+                            
+                            <div class="payment-info">
+                                <div class="payment-card">
+                                    <h3>💰 Verificación Única</h3>
+                                    <p>Pago de $2 USD para:</p>
+                                    <ul>
+                                        <li>✅ Publicar vehículos</li>
+                                        <li>✅ Buscar y contactar vendedores</li>
+                                        <li>✅ Acceso completo a la plataforma</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <form id="register-form" class="auth-form">
+                                <div class="form-group">
+                                    <label class="form-label">Nombre completo</label>
+                                    <input type="text" class="form-input" name="fullName" required 
+                                           placeholder="Juan Pérez">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-input" name="email" required 
+                                           placeholder="tu@email.com">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Contraseña</label>
+                                    <input type="password" class="form-input" name="password" required 
+                                           placeholder="••••••••" minlength="6">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">País</label>
+                                    <select class="form-select" name="country" required>
+                                        <option value="">Seleccionar país</option>
+                                        <option value="MX">México</option>
+                                        <option value="AR">Argentina</option>
+                                        <option value="CO">Colombia</option>
+                                        <option value="BR">Brasil</option>
+                                        <option value="CL">Chile</option>
+                                        <option value="PE">Perú</option>
+                                        <option value="UY">Uruguay</option>
+                                        <option value="PY">Paraguay</option>
+                                        <option value="BO">Bolivia</option>
+                                        <option value="EC">Ecuador</option>
+                                        <option value="VE">Venezuela</option>
+                                        <option value="GT">Guatemala</option>
+                                        <option value="HN">Honduras</option>
+                                        <option value="SV">El Salvador</option>
+                                        <option value="NI">Nicaragua</option>
+                                        <option value="CR">Costa Rica</option>
+                                        <option value="PA">Panamá</option>
+                                        <option value="CU">Cuba</option>
+                                        <option value="DO">República Dominicana</option>
+                                        <option value="PR">Puerto Rico</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-checkbox">
+                                        <input type="checkbox" name="terms" required>
+                                        <span class="checkmark"></span>
+                                        Acepto los <a href="#" onclick="showTerms()">Términos y Condiciones</a>
+                                    </label>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary auth-btn payment-btn">
+                                    💳 Crear Cuenta y Pagar $2 USD
+                                </button>
+                            </form>
+                            
+                            <div class="auth-footer">
+                                <p>¿Ya tenés cuenta? <a href="#" onclick="showLogin()">Iniciar sesión</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Terms Section -->
+                <section id="terms-section" class="section">
+                    <div class="terms-container">
+                        <div class="terms-header">
+                            <button class="back-btn" onclick="showRegister()">← Volver</button>
+                            <h2>Términos y Condiciones</h2>
+                        </div>
+                        <div class="terms-content">
+                            <h3>AutoMarket - Términos de Servicio</h3>
+                            <p><strong>Última actualización:</strong> Enero 2025</p>
+                            
+                            <h4>1. Descripción del Servicio</h4>
+                            <p>AutoMarket es una plataforma digital que conecta compradores y vendedores de vehículos en Latinoamérica.</p>
+                            
+                            <h4>2. Verificación de Usuario</h4>
+                            <p>Para acceder a todas las funcionalidades de la plataforma, los usuarios deben realizar un pago único de $2 USD como verificación de identidad.</p>
+                            
+                            <h4>3. Responsabilidades del Usuario</h4>
+                            <p>Los usuarios son responsables de:</p>
+                            <ul>
+                                <li>Proporcionar información veraz y actualizada</li>
+                                <li>Mantener la confidencialidad de su cuenta</li>
+                                <li>Cumplir con las leyes locales</li>
+                            </ul>
+                            
+                            <h4>4. Limitación de Responsabilidad</h4>
+                            <p>AutoMarket no se hace responsable por transacciones entre usuarios ni por la veracidad de la información publicada.</p>
+                            
+                            <h4>5. Contacto</h4>
+                            <p>Para consultas: admin@tendigitalservicesllc.com</p>
+                            
+                            <div class="terms-actions">
+                                <button class="btn btn-secondary" onclick="showRegister()">No acepto</button>
+                                <button class="btn btn-primary" onclick="acceptTerms()">Acepto los términos</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>

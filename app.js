@@ -23,6 +23,7 @@ import {
 // App State
 let currentUser = null;
 let vehicles = [];
+let isAuthenticated = false;
 
 // DOM Elements
 const loadingScreen = document.getElementById('loading');
@@ -39,7 +40,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Initialize Firebase Auth listener
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
+            isAuthenticated = !!user;
             updateUI();
+            updateNavigation();
         });
         
         // Load initial data
@@ -47,6 +50,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Setup navigation
         setupNavigation();
+        
+        // Setup authentication forms
+        setupAuthForms();
         
         // Hide loading screen
         setTimeout(() => {
@@ -82,6 +88,20 @@ function setupNavigation() {
             btn.classList.add('active');
         });
     });
+}
+
+function setupAuthForms() {
+    // Login form
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Register form
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+    }
 }
 
 function showSection(sectionName) {
@@ -402,8 +422,12 @@ function updateUI() {
     // Update UI based on authentication state
     if (currentUser) {
         console.log('User logged in:', currentUser.email);
+        renderProtectedContent();
+        renderProfile();
     } else {
         console.log('User logged out');
+        renderProtectedContent();
+        renderProfile();
     }
 }
 
@@ -417,6 +441,178 @@ function showSuccess(message) {
     alert('Éxito: ' + message);
 }
 
+// Authentication Functions
+function updateNavigation() {
+    const homeBtn = document.querySelector('[data-section="home"]');
+    const exploreBtn = document.querySelector('[data-section="explore"]');
+    const publishBtn = document.querySelector('[data-section="publish"]');
+    const profileBtn = document.querySelector('[data-section="profile"]');
+    
+    if (isAuthenticated) {
+        // User is logged in - show all sections
+        exploreBtn.style.display = 'flex';
+        publishBtn.style.display = 'flex';
+        profileBtn.style.display = 'flex';
+    } else {
+        // User is not logged in - hide protected sections
+        exploreBtn.style.display = 'none';
+        publishBtn.style.display = 'none';
+        profileBtn.style.display = 'none';
+    }
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+    
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showSuccess('¡Bienvenido a AutoMarket!');
+        showSection('home');
+    } catch (error) {
+        console.error('Login error:', error);
+        showError('Error al iniciar sesión. Verificá tu email y contraseña.');
+    }
+}
+
+async function handleRegister(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const fullName = formData.get('fullName');
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const country = formData.get('country');
+    const terms = formData.get('terms');
+    
+    if (!terms) {
+        showError('Debés aceptar los términos y condiciones');
+        return;
+    }
+    
+    try {
+        // Create user account
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Save user data to Firestore
+        await addDoc(collection(db, 'users'), {
+            uid: user.uid,
+            displayName: fullName,
+            email: email,
+            country: country,
+            isVerifiedPayment: true, // Simulated payment
+            paymentDate: new Date(),
+            paymentAmount: 2,
+            paymentCurrency: 'USD',
+            createdAt: new Date()
+        });
+        
+        showSuccess('¡Cuenta creada exitosamente! Pago simulado de $2 USD procesado.');
+        showSection('home');
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        if (error.code === 'auth/email-already-in-use') {
+            showError('Este email ya está registrado. Intentá iniciar sesión.');
+        } else {
+            showError('Error al crear la cuenta. Intentá nuevamente.');
+        }
+    }
+}
+
+function showLogin() {
+    showSection('login');
+}
+
+function showRegister() {
+    showSection('register');
+}
+
+function showTerms() {
+    showSection('terms');
+}
+
+function acceptTerms() {
+    // Check the terms checkbox
+    const termsCheckbox = document.querySelector('input[name="terms"]');
+    if (termsCheckbox) {
+        termsCheckbox.checked = true;
+    }
+    showRegister();
+}
+
+// Payment simulation
+function simulatePayment() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log('Payment simulation: $2 USD processed');
+            resolve(true);
+        }, 2000);
+    });
+}
+
+// Protected content functions
+function checkAuth() {
+    if (!isAuthenticated) {
+        showSection('login');
+        return false;
+    }
+    return true;
+}
+
+function renderProtectedContent() {
+    // Update explore section
+    const exploreSection = document.getElementById('explore-section');
+    if (exploreSection) {
+        if (isAuthenticated) {
+            exploreSection.innerHTML = exploreSection.innerHTML.replace(
+                '<!-- Vehicles will be loaded here -->',
+                '<div id="vehicles-list" class="vehicles-list"></div>'
+            );
+        } else {
+            exploreSection.innerHTML = `
+                <div class="auth-required">
+                    <div class="auth-required-icon">🔒</div>
+                    <h3>Acceso Requerido</h3>
+                    <p>Necesitás iniciar sesión para buscar vehículos</p>
+                    <button class="btn btn-primary" onclick="showLogin()">Iniciar Sesión</button>
+                    <button class="btn btn-secondary" onclick="showRegister()">Crear Cuenta</button>
+                </div>
+            `;
+        }
+    }
+    
+    // Update publish section
+    const publishSection = document.getElementById('publish-section');
+    if (publishSection) {
+        if (isAuthenticated) {
+            publishSection.innerHTML = `
+                <div class="section-header">
+                    <h2>Publicar Vehículo</h2>
+                    <p>Completa la información de tu vehículo</p>
+                </div>
+                <div id="publish-form" class="publish-form">
+                    <!-- Form will be loaded here -->
+                </div>
+            `;
+        } else {
+            publishSection.innerHTML = `
+                <div class="auth-required">
+                    <div class="auth-required-icon">📝</div>
+                    <h3>Acceso Requerido</h3>
+                    <p>Necesitás iniciar sesión para publicar vehículos</p>
+                    <button class="btn btn-primary" onclick="showLogin()">Iniciar Sesión</button>
+                    <button class="btn btn-secondary" onclick="showRegister()">Crear Cuenta</button>
+                </div>
+            `;
+        }
+    }
+}
+
 // Global functions for HTML onclick handlers
 window.showSection = showSection;
 window.viewVehicle = (vehicleId) => {
@@ -425,7 +621,10 @@ window.viewVehicle = (vehicleId) => {
 };
 window.handlePublishVehicle = handlePublishVehicle;
 window.handleSignOut = handleSignOut;
-window.showLoginForm = () => {
-    // TODO: Implement login form
-    console.log('Show login form');
-};
+window.showLoginForm = showLogin;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.showLogin = showLogin;
+window.showRegister = showRegister;
+window.showTerms = showTerms;
+window.acceptTerms = acceptTerms;
