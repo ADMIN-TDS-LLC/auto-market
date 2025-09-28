@@ -1,0 +1,30 @@
+rules_version = '2';
+
+// 🚨 REGLAS TEMPORALES DE STORAGE - MUY PERMISIVAS PARA TESTING
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // TEMPORAL: Permite leer todas las imágenes (para mostrar en app)
+    match /{allPaths=**} {
+      allow read: if true;
+    }
+    
+    // TEMPORAL: Permite escribir si está autenticado
+    match /vehicles/{vehicleId}/{allPaths=**} {
+      allow write: if request.auth != null;
+    }
+    
+    // TEMPORAL: Permite escribir fotos de perfil
+    match /users/{userId}/{allPaths=**} {
+      allow write: if request.auth != null;
+    }
+  }
+}
+
+// 📝 NOTA: Cambiar por reglas más restrictivas en producción
+
+
+
+
+

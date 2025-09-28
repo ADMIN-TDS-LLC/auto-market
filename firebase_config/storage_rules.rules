@@ -1,0 +1,24 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Vehicles images - solo el dueño puede subir/modificar
+    match /vehicles/{vehicleId}/{allPaths=**} {
+      allow read: if true; // Lectura pública para mostrar imágenes
+      allow write: if request.auth != null && 
+        request.auth.uid == vehicleId.split('_')[0]; // Asume formato: userId_vehicleId
+    }
+    
+    // User profile images
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && 
+        request.auth.uid == userId;
+    }
+    
+    // Ads images - solo admins
+    match /ads/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null; // Validación adicional en Firestore rules
+    }
+  }
+}

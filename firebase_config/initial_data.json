@@ -1,0 +1,138 @@
+{
+  "users": [
+    {
+      "uid": "demo_user_latam",
+      "displayName": "Usuario Demo LATAM",
+      "email": "demo@automarket.com",
+      "phone": "+52 55 1234 5678",
+      "photoUrl": "",
+      "createdAt": "2025-01-09T20:40:00.000Z",
+      "isDealer": false,
+      "isVerifiedPayment": true,
+      "countryCode": "MX",
+      "currencyCode": "MXN",
+      "city": "Ciudad de México",
+      "province": "CDMX"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "demo_user_latam",
+      "whatsapp": "5255123456789",
+      "phone": "+52 55 1234 5678",
+      "email": "demo@automarket.com"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "veh_demo_mx_01",
+      "ownerId": "demo_user_latam",
+      "title": "Nissan Versa Advance 2023",
+      "vehicleType": "auto",
+      "brand": "Nissan",
+      "model": "Versa",
+      "year": 2023,
+      "price": 280000,
+      "currency": "MXN",
+      "priceUSD": 16500,
+      "mileage": 15000,
+      "fuel": "Gasolina",
+      "transmission": "Automática",
+      "countryCode": "MX",
+      "province": "CDMX",
+      "city": "Ciudad de México",
+      "geo": {
+        "_lat": 19.4326,
+        "_long": -99.1332
+      },
+      "features": [
+        "Aire acondicionado",
+        "Dirección asistida",
+        "Airbags",
+        "Pantalla táctil"
+      ],
+      "images": [
+        "https://via.placeholder.com/1200x800?text=Nissan+Versa+2023"
+      ],
+      "description": "Excelente estado, servicios en agencia, un solo dueño.",
+      "status": "active",
+      "isFeatured": true,
+      "createdAt": "2025-01-09T20:40:00.000Z",
+      "updatedAt": "2025-01-09T20:40:00.000Z",
+      "views": 0
+    },
+    {
+      "id": "veh_demo_ar_01",
+      "ownerId": "demo_user_latam",
+      "title": "Toyota Corolla Cross XEI 2022",
+      "vehicleType": "auto",
+      "brand": "Toyota",
+      "model": "Corolla Cross",
+      "year": 2022,
+      "price": 8500000,
+      "currency": "ARS",
+      "priceUSD": 8500,
+      "mileage": 25000,
+      "fuel": "Nafta",
+      "transmission": "CVT",
+      "countryCode": "AR",
+      "province": "Buenos Aires",
+      "city": "San Isidro",
+      "geo": {
+        "_lat": -34.472,
+        "_long": -58.516
+      },
+      "features": [
+        "Toyota Safety Sense",
+        "Cámara de retroceso",
+        "Climatizador automático"
+      ],
+      "images": [
+        "https://via.placeholder.com/1200x800?text=Corolla+Cross+2022"
+      ],
+      "description": "Impecable, todos los services oficiales, garantía vigente.",
+      "status": "active",
+      "isFeatured": false,
+      "createdAt": "2025-01-09T20:40:00.000Z",
+      "updatedAt": "2025-01-09T20:40:00.000Z",
+      "views": 0
+    }
+  ],
+  "favorites": [],
+  "reports": [],
+  "ads": [
+    {
+      "id": "ad_latam_01",
+      "title": "Financiá tu 0km - LATAM",
+      "image": "https://via.placeholder.com/1200x300?text=Financiacion+LATAM",
+      "linkUrl": "https://automarket.com/financiacion",
+      "active": true,
+      "position": "feed_every_8"
+    }
+  ],
+  "appSettings": [
+    {
+      "id": "public",
+      "contactRevealMode": "show_seller_contacts",
+      "entryFeeUSD": 2.0,
+      "currencyBase": "USD",
+      "supportedCountries": [
+        "MX", "GT", "BZ", "SV", "HN", "NI", "CR", "PA",
+        "CO", "VE", "GY", "SR", "BR", "EC", "PE", "BO", 
+        "PY", "UY", "AR", "CL", "CU", "DO", "PR"
+      ],
+      "supportedVehicleTypes": [
+        "auto", "moto", "pickup", "4x4", "camion", "chasis",
+        "tractor", "atv_utv", "bicicleta_electrica", 
+        "moto_electrica", "utilitario"
+      ],
+      "supportedCurrencies": {
+        "MX": "MXN", "GT": "GTQ", "SV": "USD", "HN": "HNL",
+        "NI": "NIO", "CR": "CRC", "PA": "PAB", "CO": "COP",
+        "VE": "VES", "BR": "BRL", "EC": "USD", "PE": "PEN",
+        "BO": "BOB", "PY": "PYG", "UY": "UYU", "AR": "ARS",
+        "CL": "CLP", "CU": "CUP", "DO": "DOP", "PR": "USD"
+      }
+    }
+  ]
+}

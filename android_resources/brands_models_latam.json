@@ -1,0 +1,64 @@
+{
+  "autos": {
+    "Nissan": ["Versa", "Sentra", "Altima", "Kicks", "X-Trail", "Frontier"],
+    "Toyota": ["Corolla", "Yaris", "RAV4", "Hilux", "Prius", "Corolla Cross"],
+    "Volkswagen": ["Jetta", "Tiguan", "Amarok", "Polo", "Vento", "Taos"],
+    "Chevrolet": ["Aveo", "Cruze", "Equinox", "Silverado", "Onix", "Tracker"],
+    "Ford": ["Fiesta", "Focus", "Escape", "Ranger", "Mustang", "Territory"],
+    "Honda": ["Civic", "Accord", "CR-V", "HR-V", "City", "Fit"],
+    "Hyundai": ["Accent", "Elantra", "Tucson", "Santa Fe", "Creta", "HB20"],
+    "Kia": ["Rio", "Forte", "Sportage", "Sorento", "Seltos", "Cerato"],
+    "Mazda": ["Mazda3", "CX-5", "CX-3", "Mazda6", "CX-30", "BT-50"],
+    "Renault": ["Logan", "Sandero", "Duster", "Captur", "Koleos", "Kangoo"],
+    "Peugeot": ["208", "2008", "308", "3008", "508", "Partner"],
+    "Fiat": ["Uno", "Palio", "Cronos", "Argo", "Toro", "Strada"],
+    "Jeep": ["Compass", "Renegade", "Grand Cherokee", "Wrangler", "Commander"],
+    "BMW": ["Serie 1", "Serie 3", "X1", "X3", "X5", "320i"],
+    "Mercedes-Benz": ["Clase A", "Clase C", "GLA", "GLC", "Sprinter"],
+    "Audi": ["A3", "A4", "Q3", "Q5", "Q7", "TT"]
+  },
+  "motos": {
+    "Honda": ["CG 150", "CB 190", "XR 150", "Wave 110", "CBR 250", "NC 750"],
+    "Yamaha": ["FZ 25", "XTZ 250", "YBR 125", "MT-03", "R3", "Tenere 700"],
+    "Suzuki": ["GN 125", "GSX-R 150", "V-Strom 650", "Gixxer 250", "Boulevard"],
+    "Kawasaki": ["Ninja 400", "Z400", "Versys 300", "KLR 650", "Vulcan"],
+    "Bajaj": ["Rouser 200NS", "Dominar 400", "Pulsar 180", "Avenger 220"],
+    "KTM": ["Duke 200", "RC 200", "Adventure 390", "Duke 390"],
+    "TVS": ["Apache 160", "Apache 200", "Ntorq 125"],
+    "Italika": ["XS 150", "DT 125", "RT 180", "WS 150"],
+    "Vento": ["Rebellian 200", "Proton 150", "Phantom 150R"],
+    "Carabela": ["VX 150", "VR 200", "Cross 150"]
+  },
+  "pickups_4x4": {
+    "Toyota": ["Hilux", "Tacoma", "Tundra", "4Runner"],
+    "Ford": ["Ranger", "F-150", "F-250", "Bronco"],
+    "Chevrolet": ["S10", "Silverado", "Colorado", "Suburban"],
+    "Nissan": ["Frontier", "Navara", "Titan", "Pathfinder"],
+    "Volkswagen": ["Amarok", "Atlas", "Touareg"],
+    "Mitsubishi": ["L200", "Montero", "Outlander", "ASX"],
+    "Isuzu": ["D-Max", "MU-X", "Trooper"],
+    "Great Wall": ["Wingle 5", "Wingle 7", "Poer"],
+    "JAC": ["T6", "T8", "Hunter"],
+    "Mahindra": ["Pik Up", "Scorpio", "XUV500"]
+  },
+  "camiones_comerciales": {
+    "Mercedes-Benz": ["Accelo", "Atego", "Arocs", "Actros"],
+    "Volvo": ["FH", "FM", "FE", "VNL"],
+    "Scania": ["R-Series", "G-Series", "P-Series"],
+    "Iveco": ["Tector", "Hi-Way", "Daily"],
+    "Freightliner": ["Cascadia", "Columbia", "Century"],
+    "Kenworth": ["T800", "T680", "W900"],
+    "Peterbilt": ["389", "579", "567"],
+    "International": ["ProStar", "LT Series", "HV Series"]
+  },
+  "utilitarios": {
+    "Peugeot": ["Partner", "Expert", "Boxer"],
+    "Citroën": ["Berlingo", "Jumpy", "Jumper"],
+    "Renault": ["Kangoo", "Master", "Trafic"],
+    "Fiat": ["Fiorino", "Ducato", "Doblo"],
+    "Ford": ["Transit", "Transit Connect", "E-Series"],
+    "Chevrolet": ["Express", "City Express", "N300"],
+    "Nissan": ["NV200", "Urvan", "NV400"],
+    "Hyundai": ["H100", "Porter", "H350"]
+  }
+}
