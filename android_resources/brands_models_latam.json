@@ -11,7 +11,7 @@
     "Mazda": ["Mazda3", "CX-5", "CX-3", "Mazda6", "CX-30", "BT-50"],
     "Renault": ["Logan", "Sandero", "Duster", "Captur", "Koleos", "Kangoo"],
     "Peugeot": ["208", "2008", "308", "3008", "508", "Partner"],
-    "Fiat": ["Uno", "Palio", "Cronos", "Argo", "Toro", "Strada"],
+    "Fiat": ["Uno", "Palio", "Cronos", "Argo", "Toro", "Strada", "Mobi", "Grand Siena", "Linea", "Doblo"],
     "Jeep": ["Compass", "Renegade", "Grand Cherokee", "Wrangler", "Commander"],
     "BMW": ["Serie 1", "Serie 3", "X1", "X3", "X5", "320i"],
     "Mercedes-Benz": ["Clase A", "Clase C", "GLA", "GLC", "Sprinter"],
