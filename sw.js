@@ -1,5 +1,5 @@
-// AutoMarket Service Worker - Versión mejorada
-const CACHE_NAME = 'automarket-v1.0.0';
+// AutoMarket Service Worker - Versión optimizada sin errores
+const CACHE_NAME = 'automarket-v1.1.0';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -17,12 +17,14 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Service Worker: Cacheando archivos');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache.map(url => new Request(url, {cache: 'reload'})));
       })
       .catch((error) => {
         console.log('Service Worker: Error al cachear:', error);
       })
   );
+  // Forzar activación inmediata
+  self.skipWaiting();
 });
 
 // Activar Service Worker
@@ -40,10 +42,17 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  // Tomar control inmediato
+  self.clients.claim();
 });
 
 // Interceptar requests
 self.addEventListener('fetch', (event) => {
+  // Solo interceptar requests GET
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -80,14 +89,19 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Manejar mensajes del cliente
+// Manejar mensajes del cliente de forma síncrona
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+  
+  // Responder inmediatamente para evitar el error de canal cerrado
+  if (event.ports && event.ports[0]) {
+    event.ports[0].postMessage({status: 'ok'});
+  }
 });
 
-// Manejar errores de conexión
+// Manejar errores sin bloquear
 self.addEventListener('error', (event) => {
   console.log('Service Worker: Error capturado:', event.error);
 });
