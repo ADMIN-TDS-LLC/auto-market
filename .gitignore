@@ -7,8 +7,6 @@ yarn-error.log*
 # Build outputs
 dist/
 build/
-.next/
-out/
 
 # Environment variables
 .env
@@ -18,13 +16,12 @@ out/
 .env.production.local
 
 # IDE files
-.vscode/
+.vscode/settings.json
 .idea/
 *.swp
 *.swo
-*~
 
-# OS files
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -46,28 +43,6 @@ pids
 # Coverage directory used by tools like istanbul
 coverage/
 
-# Firebase
-.firebase/
-firebase-debug.log
-firebase-debug.*.log
-
-# Vite
-.vite/
-
 # Temporary folders
 tmp/
 temp/
-
-# Local development
-.local/
-.cache/
-
-# PWA
-sw.js.map
-
-# Android specific (keep for reference)
-# app/build/
-# app/google-services.json
-# local.properties
-# *.apk
-# *.aab

@@ -11,10 +11,8 @@ export default defineConfig({
     sourcemap: false,
     minify: 'esbuild',
     rollupOptions: {
-      output: {
-        manualChunks: {
-          'firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage']
-        }
+      input: {
+        main: './index.html'
       }
     }
   },
@@ -30,10 +28,5 @@ export default defineConfig({
   preview: {
     port: 4173,
     host: true
-  },
-  
-  // Define global constants
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0')
   }
 });
