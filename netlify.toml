@@ -5,8 +5,8 @@
   # Directory that contains the deploy-ready HTML files and assets
   publish = "."
   
-  # Default build command
-  command = "echo 'Static site - no build needed'"
+  # Default build command - no build needed for static site
+  command = "echo 'Static site deployed successfully'"
 
 [[redirects]]
   # Handle client-side routing
@@ -29,6 +29,12 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
     Service-Worker-Allowed = "/"
+
+[[headers]]
+  # JavaScript files headers
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
 
 [[headers]]
   # Images headers
