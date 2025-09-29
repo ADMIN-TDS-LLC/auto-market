@@ -5,8 +5,8 @@
   # Directory that contains the deploy-ready HTML files and assets
   publish = "dist"
   
-  # Default build command - no build needed for static site
-  command = "echo 'Static site deployed successfully'"
+  # Build command to create dist folder
+  command = "npm run build"
 
 # Force Netlify to use this configuration
 [build.environment]
