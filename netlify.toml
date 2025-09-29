@@ -3,10 +3,14 @@
   base = "."
   
   # Directory that contains the deploy-ready HTML files and assets
-  publish = "."
+  publish = "dist"
   
   # Default build command - no build needed for static site
   command = "echo 'Static site deployed successfully'"
+
+# Force Netlify to use this configuration
+[build.environment]
+  NODE_VERSION = "18"
 
 [[redirects]]
   # Handle client-side routing
