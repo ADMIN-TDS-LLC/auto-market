@@ -13,7 +13,19 @@
   NODE_VERSION = "18"
 
 [[redirects]]
-  # Handle client-side routing
+  # Serve assets directly (don't redirect to index.html)
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+
+[[redirects]]
+  # Serve service worker directly
+  from = "/sw.js"
+  to = "/sw.js"
+  status = 200
+
+[[redirects]]
+  # Handle client-side routing for everything else
   from = "/*"
   to = "/index.html"
   status = 200
