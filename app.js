@@ -613,6 +613,23 @@ function renderProtectedContent() {
     }
 }
 
+// Mobile menu functions
+function toggleMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburger = document.querySelector('.hamburger-menu');
+    
+    mobileMenu.classList.toggle('active');
+    hamburger.classList.toggle('active');
+}
+
+function closeMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburger = document.querySelector('.hamburger-menu');
+    
+    mobileMenu.classList.remove('active');
+    hamburger.classList.remove('active');
+}
+
 // Global functions for HTML onclick handlers
 window.showSection = showSection;
 window.viewVehicle = (vehicleId) => {
@@ -628,3 +645,5 @@ window.showLogin = showLogin;
 window.showRegister = showRegister;
 window.showTerms = showTerms;
 window.acceptTerms = acceptTerms;
+window.toggleMenu = toggleMenu;
+window.closeMenu = closeMenu;

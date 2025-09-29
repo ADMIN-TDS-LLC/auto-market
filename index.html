@@ -7,13 +7,14 @@
     <meta name="theme-color" content="#4CAF50">
     
     <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="AutoMarket">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/icon-192.png">
+           <!-- Favicon -->
+           <link rel="icon" type="image/jpeg" href="/512X512.jpc.jpg">
+           <link rel="apple-touch-icon" href="/512X512.jpc.jpg">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
@@ -42,13 +43,65 @@
 
         <!-- Main App -->
         <div id="main-app" class="main-app" style="display: none;">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-content">
-                    <img src="/logo.svg" alt="AutoMarket" class="header-logo">
-                    <h1>AUTOMARKET</h1>
-                </div>
-            </header>
+                   <!-- Header -->
+                   <header class="header">
+                       <div class="header-content">
+                           <div class="logo-container">
+                               <img src="/logo.svg" alt="AutoMarket" class="header-logo">
+                               <h1>AUTOMARKET</h1>
+                           </div>
+                           <button class="hamburger-menu" onclick="toggleMenu()">
+                               <span></span>
+                               <span></span>
+                               <span></span>
+                           </button>
+                       </div>
+                   </header>
+
+                   <!-- Mobile Menu -->
+                   <div id="mobile-menu" class="mobile-menu">
+                       <div class="menu-content">
+                           <div class="menu-header">
+                               <img src="/logo.svg" alt="AutoMarket" class="menu-logo">
+                               <h2>AUTOMARKET</h2>
+                               <button class="close-menu" onclick="toggleMenu()">×</button>
+                           </div>
+                           <nav class="menu-nav">
+                               <a href="#" onclick="showSection('home')" class="menu-link">
+                                   <span class="menu-icon">🏠</span>
+                                   <span>Inicio</span>
+                               </a>
+                               <a href="#" onclick="showSection('explore')" class="menu-link">
+                                   <span class="menu-icon">🔍</span>
+                                   <span>Buscar</span>
+                               </a>
+                               <a href="#" onclick="showSection('publish')" class="menu-link">
+                                   <span class="menu-icon">➕</span>
+                                   <span>Publicar</span>
+                               </a>
+                               <a href="#" onclick="showSection('profile')" class="menu-link">
+                                   <span class="menu-icon">👤</span>
+                                   <span>Perfil</span>
+                               </a>
+                               <a href="#" onclick="showRegister()" class="menu-link">
+                                   <span class="menu-icon">📝</span>
+                                   <span>Registro</span>
+                               </a>
+                               <a href="#" onclick="showSection('contact')" class="menu-link">
+                                   <span class="menu-icon">📞</span>
+                                   <span>Contacto</span>
+                               </a>
+                               <a href="#" onclick="showSection('support')" class="menu-link">
+                                   <span class="menu-icon">🆘</span>
+                                   <span>Soporte</span>
+                               </a>
+                               <a href="#" onclick="showTerms()" class="menu-link">
+                                   <span class="menu-icon">📋</span>
+                                   <span>Términos y Condiciones</span>
+                               </a>
+                           </nav>
+                       </div>
+                   </div>
 
             <!-- Navigation -->
             <nav class="navigation">
@@ -314,45 +367,144 @@
                     </div>
                 </section>
 
-                <!-- Terms Section -->
-                <section id="terms-section" class="section">
-                    <div class="terms-container">
-                        <div class="terms-header">
-                            <button class="back-btn" onclick="showRegister()">← Volver</button>
-                            <h2>Términos y Condiciones</h2>
+                       <!-- Terms Section -->
+                       <section id="terms-section" class="section">
+                           <div class="terms-container">
+                               <div class="terms-header">
+                                   <button class="back-btn" onclick="showRegister()">← Volver</button>
+                                   <h2>Términos y Condiciones</h2>
+                               </div>
+                               <div class="terms-content">
+                                   <h3>AutoMarket - Términos de Servicio</h3>
+                                   <p><strong>Última actualización:</strong> Enero 2025</p>
+                                   
+                                   <h4>1. Descripción del Servicio</h4>
+                                   <p>AutoMarket es una plataforma digital que conecta compradores y vendedores de vehículos en Latinoamérica.</p>
+                                   
+                                   <h4>2. Verificación de Usuario</h4>
+                                   <p>Para acceder a todas las funcionalidades de la plataforma, los usuarios deben realizar un pago único de $2 USD como verificación de identidad.</p>
+                                   
+                                   <h4>3. Responsabilidades del Usuario</h4>
+                                   <p>Los usuarios son responsables de:</p>
+                                   <ul>
+                                       <li>Proporcionar información veraz y actualizada</li>
+                                       <li>Mantener la confidencialidad de su cuenta</li>
+                                       <li>Cumplir con las leyes locales</li>
+                                   </ul>
+                                   
+                                   <h4>4. Limitación de Responsabilidad</h4>
+                                   <p>AutoMarket no se hace responsable por transacciones entre usuarios ni por la veracidad de la información publicada.</p>
+                                   
+                                   <h4>5. Contacto</h4>
+                                   <p>Para consultas: admin@tendigitalservicesllc.com</p>
+                                   
+                                   <div class="terms-actions">
+                                       <button class="btn btn-secondary" onclick="showRegister()">No acepto</button>
+                                       <button class="btn btn-primary" onclick="acceptTerms()">Acepto los términos</button>
+                                   </div>
+                               </div>
+                           </div>
+                       </section>
+
+                       <!-- Contact Section -->
+                       <section id="contact-section" class="section">
+                           <div class="contact-container">
+                               <div class="section-header">
+                                   <h2>Contacto</h2>
+                                   <p>¿Tenés alguna consulta? Estamos acá para ayudarte</p>
+                               </div>
+                               <div class="contact-content">
+                                   <div class="contact-info">
+                                       <div class="contact-item">
+                                           <span class="contact-icon">📧</span>
+                                           <div>
+                                               <h3>Email</h3>
+                                               <p>admin@tendigitalservicesllc.com</p>
+                                           </div>
+                                       </div>
+                                       <div class="contact-item">
+                                           <span class="contact-icon">🌍</span>
+                                           <div>
+                                               <h3>Región</h3>
+                                               <p>Latinoamérica</p>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </section>
+
+                       <!-- Support Section -->
+                       <section id="support-section" class="section">
+                           <div class="support-container">
+                               <div class="section-header">
+                                   <h2>Centro de Ayuda</h2>
+                                   <p>Encontrá respuestas a las preguntas más frecuentes</p>
+                               </div>
+                               <div class="support-content">
+                                   <div class="faq-item">
+                                       <h3>¿Cómo me registro?</h3>
+                                       <p>Simplemente hacé clic en "Crear Cuenta" y completá el formulario. El pago de $2 USD es único y te da acceso completo.</p>
+                                   </div>
+                                   <div class="faq-item">
+                                       <h3>¿Puedo publicar vehículos gratis?</h3>
+                                       <p>Una vez que te registres y pagues la verificación de $2 USD, podés publicar todos los vehículos que quieras.</p>
+                                   </div>
+                                   <div class="faq-item">
+                                       <h3>¿En qué países funciona AutoMarket?</h3>
+                                       <p>Estamos disponibles en todos los países de Latinoamérica.</p>
+                                   </div>
+                               </div>
+                           </div>
+                       </section>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img src="/logo.svg" alt="AutoMarket" class="footer-logo-img">
+                            <span class="footer-brand-name">AUTOMARKET</span>
                         </div>
-                        <div class="terms-content">
-                            <h3>AutoMarket - Términos de Servicio</h3>
-                            <p><strong>Última actualización:</strong> Enero 2025</p>
-                            
-                            <h4>1. Descripción del Servicio</h4>
-                            <p>AutoMarket es una plataforma digital que conecta compradores y vendedores de vehículos en Latinoamérica.</p>
-                            
-                            <h4>2. Verificación de Usuario</h4>
-                            <p>Para acceder a todas las funcionalidades de la plataforma, los usuarios deben realizar un pago único de $2 USD como verificación de identidad.</p>
-                            
-                            <h4>3. Responsabilidades del Usuario</h4>
-                            <p>Los usuarios son responsables de:</p>
+                        <p class="footer-description">
+                            El marketplace líder de autos en Latinoamérica. Conectamos compradores y vendedores de autos en toda Latinoamérica con seguridad y confianza.
+                        </p>
+                        <p class="footer-description">
+                            Nuestra plataforma ofrece verificación de usuarios, garantía de transacciones seguras y el mejor catálogo de vehículos verificados.
+                        </p>
+                    </div>
+                    
+                    <div class="footer-links">
+                        <div class="footer-section">
+                            <h3>Enlaces Rápidos</h3>
                             <ul>
-                                <li>Proporcionar información veraz y actualizada</li>
-                                <li>Mantener la confidencialidad de su cuenta</li>
-                                <li>Cumplir con las leyes locales</li>
+                                <li><a href="#" onclick="showSection('home')">Inicio</a></li>
+                                <li><a href="#" onclick="showSection('explore')">Vehículos</a></li>
+                                <li><a href="#" onclick="showSection('explore')">Buscar</a></li>
+                                <li><a href="#" onclick="showSection('publish')">Publicar</a></li>
                             </ul>
-                            
-                            <h4>4. Limitación de Responsabilidad</h4>
-                            <p>AutoMarket no se hace responsable por transacciones entre usuarios ni por la veracidad de la información publicada.</p>
-                            
-                            <h4>5. Contacto</h4>
-                            <p>Para consultas: admin@tendigitalservicesllc.com</p>
-                            
-                            <div class="terms-actions">
-                                <button class="btn btn-secondary" onclick="showRegister()">No acepto</button>
-                                <button class="btn btn-primary" onclick="acceptTerms()">Acepto los términos</button>
-                            </div>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3>Soporte</h3>
+                            <ul>
+                                <li><a href="#" onclick="showSection('support')">Centro de Ayuda</a></li>
+                                <li><a href="#" onclick="showTerms()">Términos y Condiciones</a></li>
+                                <li><a href="#" onclick="showTerms()">Política de Privacidad</a></li>
+                                <li><a href="#" onclick="showSection('contact')">Contacto</a></li>
+                            </ul>
                         </div>
                     </div>
-                </section>
-            </main>
+                </div>
+                
+                <div class="footer-bottom">
+                    <hr class="footer-divider">
+                    <p class="footer-copyright">
+                        © 2025 AUTOMARKET - Todos los derechos reservados, Ten Digital Services LLC
+                    </p>
+                </div>
+            </footer>
         </div>
     </div>
 
