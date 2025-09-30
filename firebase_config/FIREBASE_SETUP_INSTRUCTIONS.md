@@ -18,9 +18,7 @@ Copia y pega exactamente este código:
 ```javascript
 rules_version = '2';
 
-// 🚗 AUTOMARKET - REGLAS DE FIREBASE STORAGE
-// Configuración para galería de vehículos y sistema de publicidad
-
+// 🚗 AUTOMARKET - REGLAS DE FIREBASE STORAGE (Versión Simplificada)
 service firebase.storage {
   match /b/{bucket}/o {
     
@@ -30,18 +28,13 @@ service firebase.storage {
     
     // Fotos y videos de vehículos
     match /vehicles/{vehicleId}/gallery/{fileId} {
-      // Permitir lectura a todos (para mostrar en marketplace)
+      // Permitir lectura a todos
       allow read: if true;
       
-      // Permitir escritura solo al propietario del vehículo
+      // Permitir escritura solo a usuarios autenticados
       allow write: if request.auth != null 
-                  && request.auth.uid == resource.metadata.ownerId;
-      
-      // Permitir subida de archivos nuevos
-      allow create: if request.auth != null 
-                   && request.resource.size < 50 * 1024 * 1024 // 50MB max
-                   && request.resource.contentType.matches('image/.*|video/.*')
-                   && request.resource.metadata.ownerId == request.auth.uid;
+                  && request.resource.size < 50 * 1024 * 1024 // 50MB max
+                  && request.resource.contentType.matches('image/.*|video/.*');
     }
     
     // ==========================================
@@ -49,22 +42,21 @@ service firebase.storage {
     // ==========================================
     
     // Banners publicitarios
-    match /advertisements/{adId}/banner.{extension} {
-      // Permitir lectura a todos (para mostrar anuncios)
+    match /advertisements/{adId}/{bannerFile} {
+      // Permitir lectura a todos
       allow read: if true;
       
-      // Permitir escritura solo al anunciante autenticado
+      // Permitir escritura solo a usuarios autenticados
       allow write: if request.auth != null 
-                  && request.resource.size < 10 * 1024 * 1024 // 10MB max para banners
-                  && request.resource.contentType.matches('image/.*')
-                  && request.resource.metadata.advertiserId == request.auth.uid;
+                  && request.resource.size < 10 * 1024 * 1024 // 10MB max
+                  && request.resource.contentType.matches('image/.*');
     }
     
     // ==========================================
     // 👤 PERFILES DE USUARIOS
     // ==========================================
     
-    // Fotos de perfil de usuarios
+    // Fotos de perfil
     match /users/{userId}/profile/{fileId} {
       // Permitir lectura a todos
       allow read: if true;
@@ -86,20 +78,6 @@ service firebase.storage {
       allow read, write: if request.auth != null 
                         && request.auth.uid == userId
                         && request.resource.size < 50 * 1024 * 1024; // 50MB max
-    }
-    
-    // ==========================================
-    // 📱 RECURSOS DE LA APP
-    // ==========================================
-    
-    // Logo y recursos estáticos de la app
-    match /app-assets/{fileName} {
-      // Permitir lectura a todos
-      allow read: if true;
-      
-      // Solo administradores pueden modificar recursos de la app
-      allow write: if request.auth != null 
-                  && request.auth.token.admin == true;
     }
     
     // ==========================================
