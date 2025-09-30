@@ -83,6 +83,10 @@
                                    <span class="menu-icon">👤</span>
                                    <span>Perfil</span>
                                </a>
+                               <a href="#" onclick="showSection('advertising')" class="menu-link advertise-link">
+                                   <span class="menu-icon">📢</span>
+                                   <span>Publicitar en esta app</span>
+                               </a>
                                <a href="#" onclick="showRegister()" class="menu-link">
                                    <span class="menu-icon">📝</span>
                                    <span>Registro</span>
@@ -162,11 +166,22 @@
                     </div>
                 </section>
 
-                <!-- Explore Section -->
+                <!-- Explore Section - Marketplace Feed -->
                 <section id="explore-section" class="section">
-                    <div class="section-header">
+                    <!-- Marketplace Header -->
+                    <div class="marketplace-header">
                         <h2>Buscar Vehículos</h2>
-                        <div class="filters">
+                        <div class="location-bar">
+                            <span class="location-icon">📍</span>
+                            <span class="location-text">Derqui, Buenos Aires, Argentina</span>
+                            <button class="filters-btn" onclick="toggleFilters()">🔧 FILTROS</button>
+                            <button class="bookmark-btn">🔖</button>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Filters (Hidden by default) -->
+                    <div id="advanced-filters" class="advanced-filters" style="display: none;">
+                        <div class="filters-grid">
                             <select id="vehicle-type" class="filter-select">
                                 <option value="">Tipo de Vehículo</option>
                                 <option value="auto">Autos</option>
@@ -193,33 +208,73 @@
                                 <option value="Mercedes-Benz">Mercedes-Benz</option>
                                 <option value="Audi">Audi</option>
                             </select>
-                            <select id="country" class="filter-select">
-                                <option value="">País</option>
-                                <option value="MX">México</option>
-                                <option value="AR">Argentina</option>
-                                <option value="CO">Colombia</option>
-                                <option value="BR">Brasil</option>
-                                <option value="CL">Chile</option>
-                                <option value="PE">Perú</option>
-                                <option value="UY">Uruguay</option>
-                                <option value="PY">Paraguay</option>
-                                <option value="BO">Bolivia</option>
-                                <option value="EC">Ecuador</option>
-                                <option value="VE">Venezuela</option>
-                                <option value="GT">Guatemala</option>
-                                <option value="HN">Honduras</option>
-                                <option value="SV">El Salvador</option>
-                                <option value="NI">Nicaragua</option>
-                                <option value="CR">Costa Rica</option>
-                                <option value="PA">Panamá</option>
-                                <option value="CU">Cuba</option>
-                                <option value="DO">República Dominicana</option>
-                                <option value="PR">Puerto Rico</option>
+                            <select id="model" class="filter-select">
+                                <option value="">Modelo</option>
                             </select>
+                            <select id="year-range" class="filter-select">
+                                <option value="">Rango de Años</option>
+                                <option value="2020-2025">2020-2025</option>
+                                <option value="2015-2019">2015-2019</option>
+                                <option value="2010-2014">2010-2014</option>
+                                <option value="2005-2009">2005-2009</option>
+                            </select>
+                            <select id="price-range" class="filter-select">
+                                <option value="">Rango de Precios</option>
+                                <option value="0-10000">$0 - $10,000</option>
+                                <option value="10000-25000">$10,000 - $25,000</option>
+                                <option value="25000-50000">$25,000 - $50,000</option>
+                                <option value="50000+">$50,000+</option>
+                            </select>
+                            <select id="currency" class="filter-select">
+                                <option value="USD">USD</option>
+                                <option value="ARS">ARS</option>
+                                <option value="MXN">MXN</option>
+                                <option value="COP">COP</option>
+                                <option value="BRL">BRL</option>
+                            </select>
+                    <select id="country" class="filter-select">
+                        <option value="">País</option>
+                        <option value="AR">🇦🇷 Argentina</option>
+                        <option value="MX">🇲🇽 México</option>
+                        <option value="BR">🇧🇷 Brasil</option>
+                        <option value="CO">🇨🇴 Colombia</option>
+                        <option value="CL">🇨🇱 Chile</option>
+                        <option value="PE">🇵🇪 Perú</option>
+                        <option value="UY">🇺🇾 Uruguay</option>
+                        <option value="PY">🇵🇾 Paraguay</option>
+                        <option value="BO">🇧🇴 Bolivia</option>
+                        <option value="EC">🇪🇨 Ecuador</option>
+                        <option value="VE">🇻🇪 Venezuela</option>
+                        <option value="GT">🇬🇹 Guatemala</option>
+                        <option value="HN">🇭🇳 Honduras</option>
+                        <option value="SV">🇸🇻 El Salvador</option>
+                        <option value="NI">🇳🇮 Nicaragua</option>
+                        <option value="CR">🇨🇷 Costa Rica</option>
+                        <option value="PA">🇵🇦 Panamá</option>
+                        <option value="CU">🇨🇺 Cuba</option>
+                        <option value="DO">🇩🇴 República Dominicana</option>
+                        <option value="HT">🇭🇹 Haití</option>
+                        <option value="PR">🇵🇷 Puerto Rico</option>
+                        <option value="US">🇺🇸 Estados Unidos</option>
+                    </select>
                         </div>
                     </div>
-                    <div id="vehicles-list" class="vehicles-list">
-                        <!-- Vehicles will be loaded here -->
+
+                    <!-- Marketplace Feed -->
+                    <div id="marketplace-feed" class="marketplace-feed">
+                        <!-- Vehicles and ads will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Vehicle Detail Section -->
+                <section id="vehicle-detail-section" class="section">
+                    <div class="vehicle-detail-header">
+                        <button class="back-btn" onclick="showSection('explore')">← Volver</button>
+                        <h2>Detalle del Vehículo</h2>
+                    </div>
+                    
+                    <div id="vehicle-detail-content" class="vehicle-detail-content">
+                        <!-- Vehicle details will be loaded here -->
                     </div>
                 </section>
 
@@ -229,8 +284,167 @@
                         <h2>Publicar Vehículo</h2>
                         <p>Completa la información de tu vehículo</p>
                     </div>
-                    <div id="publish-form" class="publish-form">
-                        <!-- Form will be loaded here -->
+                    
+                    <div class="publish-form-container">
+                        <form id="publish-vehicle-form" class="publish-form">
+                            <!-- Gallery Section -->
+                            <div class="form-section">
+                                <h3>📸 Galería Multimedia</h3>
+                                <div class="gallery-container">
+                                    <div class="gallery-upload">
+                                        <button type="button" class="gallery-btn" onclick="openGallery()">
+                                            <span class="gallery-icon">📷</span>
+                                            <span>Abrir Galería</span>
+                                            <small>Selecciona hasta 10 fotos + 2 videos</small>
+                                        </button>
+                                        <input type="file" id="gallery-input" multiple accept="image/*,video/*" style="display: none;">
+                                        <div class="gallery-info">
+                                            <p>📸 <strong>Fotos:</strong> <span id="photo-count">0</span>/10</p>
+                                            <p>🎥 <strong>Videos:</strong> <span id="video-count">0</span>/2</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="gallery-preview" class="gallery-preview">
+                                        <!-- Selected files preview will be shown here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vehicle Information -->
+                            <div class="form-section">
+                                <h3>🚗 Información del Vehículo</h3>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Título de la Publicación</label>
+                                    <input type="text" class="form-input" name="title" required 
+                                           placeholder="Ej: Vendo Volkswagen Polo Comfortline 2019">
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Marca</label>
+                                        <select class="form-select" name="brand" required>
+                                            <option value="">Seleccionar marca</option>
+                                            <option value="Volkswagen">Volkswagen</option>
+                                            <option value="Toyota">Toyota</option>
+                                            <option value="Ford">Ford</option>
+                                            <option value="Chevrolet">Chevrolet</option>
+                                            <option value="Honda">Honda</option>
+                                            <option value="Nissan">Nissan</option>
+                                            <option value="Hyundai">Hyundai</option>
+                                            <option value="Kia">Kia</option>
+                                            <option value="BMW">BMW</option>
+                                            <option value="Mercedes-Benz">Mercedes-Benz</option>
+                                            <option value="Audi">Audi</option>
+                                            <option value="Peugeot">Peugeot</option>
+                                            <option value="Renault">Renault</option>
+                                            <option value="Fiat">Fiat</option>
+                                            <option value="Jeep">Jeep</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Modelo</label>
+                                        <input type="text" class="form-input" name="model" required 
+                                               placeholder="Ej: Polo, Corolla, Focus">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Año</label>
+                                        <select class="form-select" name="year" required>
+                                            <option value="">Seleccionar año</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2018">2018</option>
+                                            <option value="2017">2017</option>
+                                            <option value="2016">2016</option>
+                                            <option value="2015">2015</option>
+                                            <option value="2014">2014</option>
+                                            <option value="2013">2013</option>
+                                            <option value="2012">2012</option>
+                                            <option value="2011">2011</option>
+                                            <option value="2010">2010</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Kilometraje</label>
+                                        <input type="number" class="form-input" name="mileage" required 
+                                               placeholder="Ej: 45000">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Price and Location -->
+                            <div class="form-section">
+                                <h3>💰 Precio y Ubicación</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Precio</label>
+                                        <input type="number" class="form-input" name="price" required 
+                                               placeholder="Ej: 15500">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Moneda</label>
+                                        <select class="form-select" name="currency" required>
+                                            <option value="USD">🇺🇸 USD (Dólar Americano)</option>
+                                            <option value="USDC">💎 USDC (USD Coin)</option>
+                                            <option value="USDT">💎 USDT (Tether)</option>
+                                            <option value="ARS">🇦🇷 ARS (Peso Argentino)</option>
+                                            <option value="MXN">🇲🇽 MXN (Peso Mexicano)</option>
+                                            <option value="COP">🇨🇴 COP (Peso Colombiano)</option>
+                                            <option value="BRL">🇧🇷 BRL (Real Brasileño)</option>
+                                            <option value="CLP">🇨🇱 CLP (Peso Chileno)</option>
+                                            <option value="PEN">🇵🇪 PEN (Sol Peruano)</option>
+                                            <option value="UYU">🇺🇾 UYU (Peso Uruguayo)</option>
+                                            <option value="PYG">🇵🇾 PYG (Guaraní Paraguayo)</option>
+                                            <option value="BOB">🇧🇴 BOB (Boliviano)</option>
+                                            <option value="VES">🇻🇪 VES (Bolívar Venezolano)</option>
+                                            <option value="GTQ">🇬🇹 GTQ (Quetzal Guatemalteco)</option>
+                                            <option value="HNL">🇭🇳 HNL (Lempira Hondureño)</option>
+                                            <option value="SVC">🇸🇻 SVC (Colón Salvadoreño)</option>
+                                            <option value="NIO">🇳🇮 NIO (Córdoba Nicaragüense)</option>
+                                            <option value="CRC">🇨🇷 CRC (Colón Costarricense)</option>
+                                            <option value="PAB">🇵🇦 PAB (Balboa Panameño)</option>
+                                            <option value="CUP">🇨🇺 CUP (Peso Cubano)</option>
+                                            <option value="DOP">🇩🇴 DOP (Peso Dominicano)</option>
+                                            <option value="HTG">🇭🇹 HTG (Gourde Haitiano)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Ubicación</label>
+                                    <input type="text" class="form-input" name="location" required 
+                                           placeholder="Ej: Pilar, Buenos Aires, Argentina">
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-section">
+                                <h3>📝 Descripción</h3>
+                                <div class="form-group">
+                                    <textarea class="form-textarea" name="description" rows="4" 
+                                              placeholder="Describe el estado del vehículo, características especiales, historial de mantenimiento, etc."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary publish-btn">
+                                    📤 Publicar Vehículo
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </section>
 
@@ -241,6 +455,163 @@
                     </div>
                     <div id="profile-content" class="profile-content">
                         <!-- Profile content will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Advertising Section -->
+                <section id="advertising-section" class="section">
+                    <div class="section-header">
+                        <h2>📢 Publicidad en AutoMarket</h2>
+                        <p>Promociona tu negocio y llega a miles de compradores</p>
+                    </div>
+                    
+                    <div class="advertising-container">
+                        <!-- Login Form for Advertisers -->
+                        <div id="advertiser-login" class="advertiser-login">
+                            <div class="login-card">
+                                <h3>🔐 Acceso Anunciantes</h3>
+                                <form id="advertiser-login-form" class="advertiser-form">
+                                    <div class="form-group">
+                                        <label class="form-label">Email Comercial</label>
+                                        <input type="email" class="form-input" name="email" required 
+                                               placeholder="tu-empresa@ejemplo.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Teléfono Comercial</label>
+                                        <input type="tel" class="form-input" name="phone" required 
+                                               placeholder="+54 9 11 1234-5678">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary login-btn">
+                                        📢 Crear Anuncio
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Ad Creation Form -->
+                        <div id="ad-creation-form" class="ad-creation" style="display: none;">
+                            <div class="ad-form-container">
+                                <h3>📢 Crear Tu Anuncio</h3>
+                                
+                                <form id="create-ad-form" class="ad-form">
+                                    <!-- Advertiser Info -->
+                                    <div class="form-section">
+                                        <h4>🏢 Información de tu Empresa</h4>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label class="form-label">Nombre de la Empresa</label>
+                                                <input type="text" class="form-input" name="companyName" required 
+                                                       placeholder="Ej: Autopartes del Norte">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Rubro</label>
+                                                <select class="form-select" name="businessType" required>
+                                                    <option value="">Seleccionar rubro</option>
+                                                    <option value="autopartes">🔧 Autopartes</option>
+                                                    <option value="seguros">🛡️ Seguros</option>
+                                                    <option value="financiacion">💰 Financiación</option>
+                                                    <option value="servicios">🔧 Servicios</option>
+                                                    <option value="accesorios">🚗 Accesorios</option>
+                                                    <option value="neumaticos">🛞 Neumáticos</option>
+                                                    <option value="lubricantes">🛢️ Lubricantes</option>
+                                                    <option value="otro">📋 Otro</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label class="form-label">Email de Contacto</label>
+                                                <input type="email" class="form-input" name="contactEmail" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Teléfono de Contacto</label>
+                                                <input type="tel" class="form-input" name="contactPhone" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Ad Content -->
+                                    <div class="form-section">
+                                        <h4>📢 Contenido del Anuncio</h4>
+                                        <div class="form-group">
+                                            <label class="form-label">Título del Anuncio</label>
+                                            <input type="text" class="form-input" name="adTitle" required 
+                                                   placeholder="Ej: ¡Descuentos en Autopartes!" maxlength="50">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Descripción</label>
+                                            <textarea class="form-textarea" name="adDescription" rows="3" required 
+                                                      placeholder="Describe tu oferta, promoción o servicio..." maxlength="200"></textarea>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Banner Publicitario</label>
+                                            <div class="banner-upload">
+                                                <button type="button" class="banner-btn" onclick="openBannerUpload()">
+                                                    <span class="banner-icon">🖼️</span>
+                                                    <span>Subir Banner</span>
+                                                    <small>Recomendado: 1200x400px</small>
+                                                </button>
+                                                <input type="file" id="banner-input" accept="image/*" style="display: none;">
+                                                <div id="banner-preview" class="banner-preview"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pricing Plans -->
+                                    <div class="form-section">
+                                        <h4>💰 Planes de Publicidad</h4>
+                                        <div class="pricing-plans">
+                                            <div class="plan-card" onclick="selectPlan('basic')">
+                                                <input type="radio" name="plan" value="basic" id="plan-basic" required>
+                                                <label for="plan-basic" class="plan-label">
+                                                    <div class="plan-header">
+                                                        <h5>📢 Plan Básico</h5>
+                                                        <div class="plan-price">$3 USD</div>
+                                                    </div>
+                                                    <div class="plan-features">
+                                                        <p>✅ Publicación única</p>
+                                                        <p>✅ Aparece entre vehículos</p>
+                                                        <p>✅ Duración: Hasta que se pierda abajo</p>
+                                                        <p>✅ Ideal para promociones puntuales</p>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="plan-card premium" onclick="selectPlan('premium')">
+                                                <input type="radio" name="plan" value="premium" id="plan-premium" required>
+                                                <label for="plan-premium" class="plan-label">
+                                                    <div class="plan-header">
+                                                        <h5>⭐ Plan Premium</h5>
+                                                        <div class="plan-price">$30 USD</div>
+                                                        <div class="plan-period">/ 30 días</div>
+                                                    </div>
+                                                    <div class="plan-features">
+                                                        <p>✅ Repetición aleatoria 30 días</p>
+                                                        <p>✅ Mayor visibilidad</p>
+                                                        <p>✅ Estadísticas de alcance</p>
+                                                        <p>✅ Recordatorio de renovación</p>
+                                                        <p>✅ Ideal para empresas establecidas</p>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit -->
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-secondary" onclick="showAdvertiserLogin()">
+                                            ← Volver
+                                        </button>
+                                        <button type="submit" class="btn btn-primary publish-ad-btn">
+                                            💳 Crear y Pagar Anuncio
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </section>
 

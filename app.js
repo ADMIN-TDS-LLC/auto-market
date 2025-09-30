@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Load initial data
         await loadVehicles();
+        loadMarketplaceFeed();
         
         // Setup navigation
         setupNavigation();
@@ -36,6 +37,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Setup PWA install prompt
         setupPWAInstallPrompt();
+        
+        // Setup gallery and publish form
+        setupGallery();
+        setupPublishForm();
+        
+        // Setup advertising system
+        setupAdvertisingForms();
         
         // Hide loading screen
         setTimeout(() => {
@@ -477,16 +485,847 @@ function handleSignOut() {
     });
 }
 
+// Marketplace Feed Functions
+function toggleFilters() {
+    const filters = document.getElementById('advanced-filters');
+    if (filters.style.display === 'none') {
+        filters.style.display = 'block';
+    } else {
+        filters.style.display = 'none';
+    }
+}
+
+function showVehicleDetail(vehicleId) {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    if (!vehicle) return;
+    
+    const detailContent = document.getElementById('vehicle-detail-content');
+    detailContent.innerHTML = `
+        <div class="vehicle-gallery">
+            <img src="${vehicle.imageUrl || '/512X512.jpc.jpg'}" alt="${vehicle.title}" class="main-image">
+        </div>
+        
+        <div class="vehicle-info-detail">
+            <h3>${vehicle.title}</h3>
+            <div class="vehicle-price-large">$${vehicle.price.toLocaleString()} ${vehicle.currency}</div>
+            
+            <div class="vehicle-specs">
+                <div class="spec-item">
+                    <strong>Marca:</strong> ${vehicle.brand}
+                </div>
+                <div class="spec-item">
+                    <strong>Modelo:</strong> ${vehicle.model}
+                </div>
+                <div class="spec-item">
+                    <strong>Año:</strong> ${vehicle.year}
+                </div>
+                <div class="spec-item">
+                    <strong>Kilometraje:</strong> ${vehicle.mileage || 'No especificado'} km
+                </div>
+                <div class="spec-item">
+                    <strong>Ubicación:</strong> ${vehicle.location}
+                </div>
+            </div>
+            
+            <div class="vehicle-description">
+                <h4>Descripción</h4>
+                <p>${vehicle.description || 'Sin descripción disponible.'}</p>
+            </div>
+        </div>
+        
+        <div class="contact-seller">
+            <h4>Contactar al Vendedor</h4>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>${vehicle.sellerEmail || 'vendedor@automarket.com'}</span>
+                </div>
+                <div class="contact-item">
+                    <span>📞</span>
+                    <span>${vehicle.sellerPhone || '+54 9 11 1234-5678'}</span>
+                </div>
+            </div>
+            <button class="contact-btn" onclick="contactSeller('${vehicleId}')">
+                💬 Contactar Vendedor
+            </button>
+        </div>
+    `;
+    
+    showSection('vehicle-detail');
+}
+
+function contactSeller(vehicleId) {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    if (!vehicle) return;
+    
+    // Simulate contact action
+    alert(`Contactando al vendedor de ${vehicle.title}...`);
+}
+
+function loadMarketplaceFeed() {
+    const feed = document.getElementById('marketplace-feed');
+    if (!feed) return;
+    
+    // Sample vehicles data
+    const sampleVehicles = [
+        {
+            id: '1',
+            title: 'Polo Comfortline 2019',
+            brand: 'Volkswagen',
+            model: 'Polo',
+            year: 2019,
+            price: 15500,
+            currency: 'USD',
+            mileage: 145000,
+            location: 'Pilar, BA',
+            distance: '7 km',
+            imageUrl: '/512X512.jpc.jpg',
+            badge: 'Recién publicado',
+            badgeType: 'new',
+            paymentMethod: 'both',
+            description: 'Excelente estado, único dueño, mantenimiento al día.'
+        },
+        {
+            id: '2',
+            title: 'Gol Trend 2018',
+            brand: 'Volkswagen',
+            model: 'Gol',
+            year: 2018,
+            price: 12500,
+            currency: 'USD',
+            mileage: 120000,
+            location: 'Tigre, BA',
+            distance: '15 km',
+            imageUrl: '/512X512.jpc.jpg',
+            badge: 'Recién actualizado',
+            badgeType: 'updated',
+            paymentMethod: 'cash',
+            description: 'Buen estado general, algunos detalles menores.'
+        },
+        {
+            id: '3',
+            title: 'Civic EX 2020',
+            brand: 'Honda',
+            model: 'Civic',
+            year: 2020,
+            price: 25000,
+            currency: 'USD',
+            mileage: 45000,
+            location: 'San Isidro, BA',
+            distance: '12 km',
+            imageUrl: '/512X512.jpc.jpg',
+            badge: 'Recién publicado',
+            badgeType: 'new',
+            paymentMethod: 'financing',
+            description: 'Impecable, como nuevo, con garantía extendida.'
+        },
+        {
+            id: '4',
+            title: 'Corolla XEI 2017',
+            brand: 'Toyota',
+            model: 'Corolla',
+            year: 2017,
+            price: 18000,
+            currency: 'USD',
+            mileage: 85000,
+            location: 'Vicente López, BA',
+            distance: '8 km',
+            imageUrl: '/512X512.jpc.jpg',
+            badge: 'Recién publicado',
+            badgeType: 'new',
+            paymentMethod: 'both',
+            description: 'Excelente confiabilidad Toyota, servicio oficial.'
+        }
+    ];
+    
+    let feedHTML = '';
+    sampleVehicles.forEach((vehicle, index) => {
+        feedHTML += `
+            <div class="vehicle-card" onclick="showVehicleDetail('${vehicle.id}')">
+                <img src="${vehicle.imageUrl}" alt="${vehicle.title}" class="vehicle-image">
+                <div class="vehicle-badge ${vehicle.badgeType}">${vehicle.badge}</div>
+                <div class="vehicle-actions" onclick="event.stopPropagation()">
+                    <button class="action-btn edit-btn" onclick="editPublication('${vehicle.id}')" title="Editar publicación">
+                        ✏️
+                    </button>
+                    <button class="action-btn pause-btn" onclick="pausePublication('${vehicle.id}')" title="Pausar publicación">
+                        ⏸️
+                    </button>
+                    <button class="action-btn delete-btn" onclick="confirmDeletePublication('${vehicle.id}')" title="Eliminar publicación">
+                        🗑️
+                    </button>
+                </div>
+                <div class="vehicle-info">
+                    <div class="vehicle-price">$${vehicle.price.toLocaleString()}</div>
+                    <div class="vehicle-details">${vehicle.title} ${vehicle.mileage.toLocaleString()}km</div>
+                    <div class="vehicle-location">
+                        <span>📍</span>
+                        <span>${vehicle.location} ${vehicle.distance}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add ads every 6 vehicles (after 2nd and 4th vehicle in this case)
+        if ((index + 1) % 2 === 0 && index < sampleVehicles.length - 1) {
+            feedHTML += `
+                <div class="ad-card" onclick="showAdDetail('ad-${index}')">
+                    <div class="ad-content">
+                        <div class="ad-badge">PUBLICIDAD</div>
+                        <div class="ad-image">📢</div>
+                        <div class="ad-text">
+                            <strong>Tu Anuncio Aquí</strong>
+                            <p>Promociona tu negocio</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    });
+    
+    feed.innerHTML = feedHTML;
+}
+
+// Gallery Functions
+let selectedFiles = [];
+const maxPhotos = 10;
+const maxVideos = 2;
+
+function openGallery() {
+    const input = document.getElementById('gallery-input');
+    if (input) {
+        input.click();
+    }
+}
+
+function handleFileSelection(event) {
+    const files = Array.from(event.target.files);
+    
+    // Filter files by type and validate limits
+    let newPhotos = files.filter(file => file.type.startsWith('image/'));
+    let newVideos = files.filter(file => file.type.startsWith('video/'));
+    
+    // Check current counts
+    const currentPhotos = selectedFiles.filter(file => file.type.startsWith('image/')).length;
+    const currentVideos = selectedFiles.filter(file => file.type.startsWith('video/')).length;
+    
+    // Limit photos
+    if (currentPhotos + newPhotos.length > maxPhotos) {
+        newPhotos = newPhotos.slice(0, maxPhotos - currentPhotos);
+        showError(`Solo puedes seleccionar hasta ${maxPhotos} fotos`);
+    }
+    
+    // Limit videos
+    if (currentVideos + newVideos.length > maxVideos) {
+        newVideos = newVideos.slice(0, maxVideos - currentVideos);
+        showError(`Solo puedes seleccionar hasta ${maxVideos} videos`);
+    }
+    
+    // Validate video duration (max 1 minute) - simplified for now
+    // TODO: Implement proper video duration validation
+    console.log('Videos selected:', newVideos.length);
+    
+    // Add new files to selection
+    selectedFiles.push(...newPhotos, ...newVideos);
+    
+    // Update preview
+    updateGalleryPreview();
+    updateGalleryCounts();
+    
+    // Clear input
+    event.target.value = '';
+}
+
+function updateGalleryPreview() {
+    const preview = document.getElementById('gallery-preview');
+    if (!preview) return;
+    
+    preview.innerHTML = '';
+    
+    selectedFiles.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        
+        if (file.type.startsWith('image/')) {
+            item.innerHTML = `
+                <img src="${URL.createObjectURL(file)}" alt="Preview ${index + 1}">
+                <div class="gallery-item-type">📸</div>
+                <div class="gallery-item-overlay">
+                    <button class="gallery-item-remove" onclick="removeGalleryItem(${index})">🗑️ Eliminar</button>
+                </div>
+            `;
+        } else if (file.type.startsWith('video/')) {
+            item.innerHTML = `
+                <video src="${URL.createObjectURL(file)}" muted>
+                    <source src="${URL.createObjectURL(file)}" type="${file.type}">
+                </video>
+                <div class="gallery-item-type">🎥</div>
+                <div class="gallery-item-overlay">
+                    <button class="gallery-item-remove" onclick="removeGalleryItem(${index})">🗑️ Eliminar</button>
+                </div>
+            `;
+        }
+        
+        preview.appendChild(item);
+    });
+}
+
+function removeGalleryItem(index) {
+    selectedFiles.splice(index, 1);
+    updateGalleryPreview();
+    updateGalleryCounts();
+}
+
+function updateGalleryCounts() {
+    const photoCount = selectedFiles.filter(file => file.type.startsWith('image/')).length;
+    const videoCount = selectedFiles.filter(file => file.type.startsWith('video/')).length;
+    
+    const photoCountElement = document.getElementById('photo-count');
+    const videoCountElement = document.getElementById('video-count');
+    
+    if (photoCountElement) photoCountElement.textContent = photoCount;
+    if (videoCountElement) videoCountElement.textContent = videoCount;
+}
+
+function setupGallery() {
+    const input = document.getElementById('gallery-input');
+    if (input) {
+        input.addEventListener('change', handleFileSelection);
+    }
+}
+
+function setupPublishForm() {
+    const form = document.getElementById('publish-vehicle-form');
+    if (form) {
+        form.addEventListener('submit', handlePublishVehicle);
+    }
+}
+
+// Form submission handler
+function handlePublishVehicle(event) {
+    event.preventDefault();
+    
+    if (!isAuthenticated) {
+        showError('Debes iniciar sesión para publicar vehículos');
+        showSection('login');
+        return;
+    }
+    
+    if (selectedFiles.length === 0) {
+        showError('Debes seleccionar al menos una foto del vehículo');
+        return;
+    }
+    
+    const formData = new FormData(event.target);
+    const vehicleData = {
+        title: formData.get('title'),
+        brand: formData.get('brand'),
+        model: formData.get('model'),
+        year: parseInt(formData.get('year')),
+        mileage: parseInt(formData.get('mileage')),
+        price: parseFloat(formData.get('price')),
+        currency: formData.get('currency'),
+        location: formData.get('location'),
+        description: formData.get('description'),
+        sellerId: currentUser.uid,
+        sellerEmail: currentUser.email,
+        sellerPhone: '+54 9 11 1234-5678', // TODO: Get from user profile
+        createdAt: new Date(),
+        status: 'active'
+    };
+    
+    // Simulate upload process
+    showSuccess('¡Vehículo publicado exitosamente!');
+    showSection('explore');
+    
+    // TODO: Upload files to Firebase Storage and save vehicle data to Firestore
+    console.log('Vehicle data:', vehicleData);
+    console.log('Selected files:', selectedFiles);
+}
+
+// Publication Management Functions
+function editPublication(vehicleId) {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    if (!vehicle) return;
+    
+    // Show edit modal
+    showEditModal(vehicleId, vehicle);
+}
+
+function showEditModal(vehicleId, vehicle) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content edit-modal">
+            <div class="modal-header">
+                <h3>✏️ Editar Publicación</h3>
+                <button class="modal-close" onclick="closeModal(this)">×</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Editando:</strong> "${vehicle.title}"</p>
+                
+                <form id="edit-vehicle-form" class="edit-form">
+                    <div class="form-group">
+                        <label class="form-label">Título de la Publicación</label>
+                        <input type="text" class="form-input" name="title" value="${vehicle.title}" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Precio</label>
+                            <input type="number" class="form-input" name="price" value="${vehicle.price}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Moneda</label>
+                            <select class="form-select" name="currency" required>
+                                <option value="USD" ${vehicle.currency === 'USD' ? 'selected' : ''}>🇺🇸 USD (Dólar Americano)</option>
+                                <option value="USDC" ${vehicle.currency === 'USDC' ? 'selected' : ''}>💎 USDC (USD Coin)</option>
+                                <option value="USDT" ${vehicle.currency === 'USDT' ? 'selected' : ''}>💎 USDT (Tether)</option>
+                                <option value="ARS" ${vehicle.currency === 'ARS' ? 'selected' : ''}>🇦🇷 ARS (Peso Argentino)</option>
+                                <option value="MXN" ${vehicle.currency === 'MXN' ? 'selected' : ''}>🇲🇽 MXN (Peso Mexicano)</option>
+                                <option value="COP" ${vehicle.currency === 'COP' ? 'selected' : ''}>🇨🇴 COP (Peso Colombiano)</option>
+                                <option value="BRL" ${vehicle.currency === 'BRL' ? 'selected' : ''}>🇧🇷 BRL (Real Brasileño)</option>
+                                <option value="CLP" ${vehicle.currency === 'CLP' ? 'selected' : ''}>🇨🇱 CLP (Peso Chileno)</option>
+                                <option value="PEN" ${vehicle.currency === 'PEN' ? 'selected' : ''}>🇵🇪 PEN (Sol Peruano)</option>
+                                <option value="UYU" ${vehicle.currency === 'UYU' ? 'selected' : ''}>🇺🇾 UYU (Peso Uruguayo)</option>
+                                <option value="PYG" ${vehicle.currency === 'PYG' ? 'selected' : ''}>🇵🇾 PYG (Guaraní Paraguayo)</option>
+                                <option value="BOB" ${vehicle.currency === 'BOB' ? 'selected' : ''}>🇧🇴 BOB (Boliviano)</option>
+                                <option value="VES" ${vehicle.currency === 'VES' ? 'selected' : ''}>🇻🇪 VES (Bolívar Venezolano)</option>
+                                <option value="GTQ" ${vehicle.currency === 'GTQ' ? 'selected' : ''}>🇬🇹 GTQ (Quetzal Guatemalteco)</option>
+                                <option value="HNL" ${vehicle.currency === 'HNL' ? 'selected' : ''}>🇭🇳 HNL (Lempira Hondureño)</option>
+                                <option value="SVC" ${vehicle.currency === 'SVC' ? 'selected' : ''}>🇸🇻 SVC (Colón Salvadoreño)</option>
+                                <option value="NIO" ${vehicle.currency === 'NIO' ? 'selected' : ''}>🇳🇮 NIO (Córdoba Nicaragüense)</option>
+                                <option value="CRC" ${vehicle.currency === 'CRC' ? 'selected' : ''}>🇨🇷 CRC (Colón Costarricense)</option>
+                                <option value="PAB" ${vehicle.currency === 'PAB' ? 'selected' : ''}>🇵🇦 PAB (Balboa Panameño)</option>
+                                <option value="CUP" ${vehicle.currency === 'CUP' ? 'selected' : ''}>🇨🇺 CUP (Peso Cubano)</option>
+                                <option value="DOP" ${vehicle.currency === 'DOP' ? 'selected' : ''}>🇩🇴 DOP (Peso Dominicano)</option>
+                                <option value="HTG" ${vehicle.currency === 'HTG' ? 'selected' : ''}>🇭🇹 HTG (Gourde Haitiano)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ubicación</label>
+                        <input type="text" class="form-input" name="location" value="${vehicle.location}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Kilometraje</label>
+                        <input type="number" class="form-input" name="mileage" value="${vehicle.mileage}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-textarea" name="description" rows="4" placeholder="Describe el estado del vehículo...">${vehicle.description || ''}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Modalidad de Pago</label>
+                        <select class="form-select" name="paymentMethod">
+                            <option value="cash" ${vehicle.paymentMethod === 'cash' ? 'selected' : ''}>💵 Efectivo</option>
+                            <option value="transfer" ${vehicle.paymentMethod === 'transfer' ? 'selected' : ''}>🏦 Transferencia</option>
+                            <option value="financing" ${vehicle.paymentMethod === 'financing' ? 'selected' : ''}>🏧 Financiación</option>
+                            <option value="both" ${vehicle.paymentMethod === 'both' ? 'selected' : ''}>💰 Efectivo o Financiación</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal(this)">Cancelar</button>
+                <button class="btn btn-primary" onclick="savePublicationChanges('${vehicleId}')">💾 Guardar Cambios</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function savePublicationChanges(vehicleId) {
+    const form = document.getElementById('edit-vehicle-form');
+    if (!form) return;
+    
+    const formData = new FormData(form);
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    
+    if (!vehicle) return;
+    
+    // Update vehicle data
+    vehicle.title = formData.get('title');
+    vehicle.price = parseFloat(formData.get('price'));
+    vehicle.currency = formData.get('currency');
+    vehicle.location = formData.get('location');
+    vehicle.mileage = parseInt(formData.get('mileage'));
+    vehicle.description = formData.get('description');
+    vehicle.paymentMethod = formData.get('paymentMethod');
+    vehicle.updatedAt = new Date();
+    vehicle.badge = 'Recién actualizado';
+    vehicle.badgeType = 'updated';
+    
+    // Close modal
+    const modal = document.querySelector('.modal-overlay');
+    closeModal(modal.querySelector('.modal-close'));
+    
+    // Show success message
+    showSuccess('Publicación actualizada exitosamente');
+    
+    // Reload feed
+    loadMarketplaceFeed();
+    
+    console.log('Publication updated:', vehicleId, vehicle);
+}
+
+function pausePublication(vehicleId) {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    if (!vehicle) return;
+    
+    // Show confirmation modal
+    showConfirmationModal(
+        'Pausar Publicación',
+        `¿Estás seguro de que querés pausar la publicación de "${vehicle.title}"?`,
+        'Pausar',
+        'Cancelar',
+        () => {
+            // Update vehicle status
+            vehicle.status = 'paused';
+            vehicle.pausedAt = new Date();
+            
+            // Show success message
+            showSuccess('Publicación pausada exitosamente');
+            
+            // Reload feed
+            loadMarketplaceFeed();
+            
+            console.log('Publication paused:', vehicleId);
+        }
+    );
+}
+
+function confirmDeletePublication(vehicleId) {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    if (!vehicle) return;
+    
+    // Show deletion modal with reason selection
+    showDeleteModal(vehicleId, vehicle.title);
+}
+
+function showDeleteModal(vehicleId, vehicleTitle) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content delete-modal">
+            <div class="modal-header">
+                <h3>🗑️ Eliminar Publicación</h3>
+                <button class="modal-close" onclick="closeModal(this)">×</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>¿Estás seguro de que querés eliminar esta publicación?</strong></p>
+                <p class="vehicle-title">"${vehicleTitle}"</p>
+                
+                <div class="delete-reasons">
+                    <h4>Motivo de eliminación:</h4>
+                    <div class="reason-options">
+                        <label class="reason-option">
+                            <input type="radio" name="deleteReason" value="sold">
+                            <span>✅ Vehículo vendido</span>
+                        </label>
+                        <label class="reason-option">
+                            <input type="radio" name="deleteReason" value="changed_mind">
+                            <span>🤔 Me arrepentí de vender</span>
+                        </label>
+                        <label class="reason-option">
+                            <input type="radio" name="deleteReason" value="price_change">
+                            <span>💰 Voy a cambiar el precio (editaré la publicación)</span>
+                        </label>
+                        <label class="reason-option">
+                            <input type="radio" name="deleteReason" value="other">
+                            <span>📝 Otro motivo</span>
+                        </label>
+                    </div>
+                    
+                    <div class="custom-reason" style="display: none;">
+                        <textarea placeholder="Explica tu motivo..." maxlength="200"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal(this)">Cancelar</button>
+                <button class="btn btn-danger" onclick="deletePublication('${vehicleId}')">Eliminar Publicación</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Handle reason selection
+    const reasonInputs = modal.querySelectorAll('input[name="deleteReason"]');
+    const customReason = modal.querySelector('.custom-reason');
+    
+    reasonInputs.forEach(input => {
+        input.addEventListener('change', () => {
+            customReason.style.display = input.value === 'other' ? 'block' : 'none';
+        });
+    });
+}
+
+function deletePublication(vehicleId) {
+    const modal = document.querySelector('.modal-overlay');
+    const selectedReason = modal.querySelector('input[name="deleteReason"]:checked');
+    const customReason = modal.querySelector('.custom-reason textarea');
+    
+    if (!selectedReason) {
+        showError('Por favor selecciona un motivo para eliminar la publicación');
+        return;
+    }
+    
+    const reason = selectedReason.value;
+    const reasonText = reason === 'other' ? customReason.value : selectedReason.nextElementSibling.textContent;
+    
+    // Remove from vehicles array
+    const vehicleIndex = vehicles.findIndex(v => v.id === vehicleId);
+    if (vehicleIndex > -1) {
+        vehicles.splice(vehicleIndex, 1);
+    }
+    
+    // Close modal
+    closeModal(modal.querySelector('.modal-close'));
+    
+    // Show success message
+    showSuccess('Publicación eliminada exitosamente');
+    
+    // Reload feed
+    loadMarketplaceFeed();
+    
+    console.log('Publication deleted:', vehicleId, 'Reason:', reasonText);
+}
+
+function showConfirmationModal(title, message, confirmText, cancelText, onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>${title}</h3>
+                <button class="modal-close" onclick="closeModal(this)">×</button>
+            </div>
+            <div class="modal-body">
+                <p>${message}</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal(this)">${cancelText}</button>
+                <button class="btn btn-primary" onclick="confirmAction()">${confirmText}</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Store confirm action
+    modal.confirmAction = onConfirm;
+    
+    // Make confirmAction available globally for this modal
+    window.confirmAction = () => {
+        onConfirm();
+        closeModal(modal.querySelector('.modal-close'));
+        window.confirmAction = null; // Clean up
+    };
+}
+
+function closeModal(closeButton) {
+    const modal = closeButton.closest('.modal-overlay');
+    if (modal) {
+        modal.remove();
+    }
+}
+
 // Global functions for HTML onclick handlers
 window.showSection = showSection;
-window.viewVehicle = (vehicleId) => {
-    console.log('View vehicle:', vehicleId);
-    // TODO: Implement vehicle detail view
-};
-window.handlePublishVehicle = () => {
-    console.log('Publish vehicle');
-    // TODO: Implement publish vehicle
-};
+window.viewVehicle = showVehicleDetail;
+window.toggleFilters = toggleFilters;
+window.openGallery = openGallery;
+window.removeGalleryItem = removeGalleryItem;
+window.handlePublishVehicle = handlePublishVehicle;
+window.editPublication = editPublication;
+window.savePublicationChanges = savePublicationChanges;
+window.pausePublication = pausePublication;
+window.confirmDeletePublication = confirmDeletePublication;
+window.deletePublication = deletePublication;
+window.closeModal = closeModal;
+
+// Advertising System Functions
+function showAdvertiserLogin() {
+    document.getElementById('advertiser-login').style.display = 'flex';
+    document.getElementById('ad-creation-form').style.display = 'none';
+}
+
+function showAdCreationForm() {
+    document.getElementById('advertiser-login').style.display = 'none';
+    document.getElementById('ad-creation-form').style.display = 'block';
+}
+
+function openBannerUpload() {
+    const input = document.getElementById('banner-input');
+    if (input) {
+        input.click();
+    }
+}
+
+function selectPlan(planType) {
+    const radio = document.getElementById(`plan-${planType}`);
+    if (radio) {
+        radio.checked = true;
+    }
+}
+
+function handleAdvertiserLogin(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const advertiserData = {
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        loginTime: new Date()
+    };
+    
+    // Store advertiser data
+    localStorage.setItem('advertiserData', JSON.stringify(advertiserData));
+    
+    // Show creation form
+    showAdCreationForm();
+    
+    // Pre-fill contact fields
+    const contactEmail = document.querySelector('input[name="contactEmail"]');
+    const contactPhone = document.querySelector('input[name="contactPhone"]');
+    
+    if (contactEmail) contactEmail.value = advertiserData.email;
+    if (contactPhone) contactPhone.value = advertiserData.phone;
+    
+    console.log('Advertiser logged in:', advertiserData);
+}
+
+function handleAdCreation(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const selectedPlan = formData.get('plan');
+    const bannerFile = document.getElementById('banner-input').files[0];
+    
+    const adData = {
+        id: Date.now().toString(),
+        companyName: formData.get('companyName'),
+        businessType: formData.get('businessType'),
+        contactEmail: formData.get('contactEmail'),
+        contactPhone: formData.get('contactPhone'),
+        adTitle: formData.get('adTitle'),
+        adDescription: formData.get('adDescription'),
+        plan: selectedPlan,
+        price: selectedPlan === 'basic' ? 3 : 30,
+        currency: 'USD',
+        bannerFile: bannerFile,
+        createdAt: new Date(),
+        status: 'pending_payment'
+    };
+    
+    // Show payment simulation
+    showPaymentModal(adData);
+    
+    console.log('Ad created:', adData);
+}
+
+function showPaymentModal(adData) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content payment-modal">
+            <div class="modal-header">
+                <h3>💳 Procesar Pago</h3>
+                <button class="modal-close" onclick="closeModal(this)">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-summary">
+                    <h4>Resumen del Anuncio</h4>
+                    <p><strong>Empresa:</strong> ${adData.companyName}</p>
+                    <p><strong>Plan:</strong> ${adData.plan === 'basic' ? 'Básico' : 'Premium'}</p>
+                    <p><strong>Precio:</strong> $${adData.price} USD</p>
+                    <p><strong>Título:</strong> ${adData.adTitle}</p>
+                </div>
+                
+                <div class="payment-methods">
+                    <h4>Métodos de Pago Disponibles</h4>
+                    <div class="payment-options">
+                        <button class="payment-btn" onclick="processPayment('${adData.id}', 'visa')">
+                            💳 Visa/Mastercard
+                        </button>
+                        <button class="payment-btn" onclick="processPayment('${adData.id}', 'paypal')">
+                            🅿️ PayPal
+                        </button>
+                        <button class="payment-btn" onclick="processPayment('${adData.id}', 'crypto')">
+                            ₿ USDC/USDT
+                        </button>
+                        <button class="payment-btn" onclick="processPayment('${adData.id}', 'bank')">
+                            🏦 Transferencia Bancaria
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function processPayment(adId, method) {
+    // Simulate payment processing
+    const modal = document.querySelector('.modal-overlay');
+    closeModal(modal.querySelector('.modal-close'));
+    
+    showSuccess('¡Pago procesado exitosamente! Tu anuncio será publicado en breve.');
+    
+    // Reset form
+    document.getElementById('advertiser-login-form').reset();
+    document.getElementById('create-ad-form').reset();
+    showAdvertiserLogin();
+    
+    console.log(`Payment processed for ad ${adId} with method: ${method}`);
+}
+
+function setupBannerUpload() {
+    const input = document.getElementById('banner-input');
+    if (input) {
+        input.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const preview = document.getElementById('banner-preview');
+                if (preview) {
+                    preview.innerHTML = `<img src="${URL.createObjectURL(file)}" alt="Banner Preview">`;
+                }
+            }
+        });
+    }
+}
+
+function setupAdvertisingForms() {
+    const loginForm = document.getElementById('advertiser-login-form');
+    const createForm = document.getElementById('create-ad-form');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleAdvertiserLogin);
+    }
+    
+    if (createForm) {
+        createForm.addEventListener('submit', handleAdCreation);
+    }
+    
+    setupBannerUpload();
+}
+
+// Global functions for HTML onclick handlers
+window.showAdvertiserLogin = showAdvertiserLogin;
+window.openBannerUpload = openBannerUpload;
+window.selectPlan = selectPlan;
+window.processPayment = processPayment;
+
+window.closeModal = closeModal;
 window.handleSignOut = handleSignOut;
 window.showLoginForm = showLogin;
 window.handleLogin = handleLogin;
