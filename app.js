@@ -698,7 +698,7 @@ function openGallery() {
     }
 }
 
-function handleFileSelection(event) {
+async function handleFileSelection(event) {
     const files = Array.from(event.target.files);
     
     // Filter files by type and validate limits
@@ -721,9 +721,39 @@ function handleFileSelection(event) {
         showError(`Solo puedes seleccionar hasta ${maxVideos} videos`);
     }
     
-    // Validate video duration (max 1 minute) - simplified for now
-    // TODO: Implement proper video duration validation
-    console.log('Videos selected:', newVideos.length);
+    // Validate video size
+    const maxVideoSize = 50 * 1024 * 1024; // 50MB max
+    const validVideos = [];
+    
+    for (const video of newVideos) {
+        // Check file size
+        if (video.size > maxVideoSize) {
+            showError(`El video "${video.name}" es demasiado grande. Máximo 50MB.`);
+            continue;
+        }
+        
+        // Add to valid videos (duration validation happens in background)
+        validVideos.push(video);
+        
+        // Validate duration in background (non-blocking)
+        validateVideoDuration(video).then(isValid => {
+            if (!isValid) {
+                showError(`El video "${video.name}" es muy largo. Máximo 1 minuto.`);
+                // Remove from selection if too long
+                const index = selectedFiles.indexOf(video);
+                if (index > -1) {
+                    selectedFiles.splice(index, 1);
+                    updateGalleryPreview();
+                    updateGalleryCounts();
+                }
+            }
+        }).catch(error => {
+            console.warn('Could not validate video duration:', error);
+        });
+    }
+    
+    // Use validated videos
+    newVideos = validVideos;
     
     // Add new files to selection
     selectedFiles.push(...newPhotos, ...newVideos);
@@ -731,6 +761,9 @@ function handleFileSelection(event) {
     // Update preview
     updateGalleryPreview();
     updateGalleryCounts();
+    
+    // Show file information
+    showFileInfo(newPhotos, newVideos);
     
     // Clear input
     event.target.value = '';
@@ -755,11 +788,16 @@ function updateGalleryPreview() {
                 </div>
             `;
         } else if (file.type.startsWith('video/')) {
+            const videoUrl = URL.createObjectURL(file);
             item.innerHTML = `
-                <video src="${URL.createObjectURL(file)}" muted>
-                    <source src="${URL.createObjectURL(file)}" type="${file.type}">
+                <video src="${videoUrl}" muted preload="metadata" playsinline>
+                    <source src="${videoUrl}" type="${file.type}">
+                    Tu navegador no soporta videos HTML5.
                 </video>
                 <div class="gallery-item-type">🎥</div>
+                <div class="video-info">
+                    <span class="video-duration">⏱️ ${Math.round(file.size / 1024 / 1024 * 10) / 10}MB</span>
+                </div>
                 <div class="gallery-item-overlay">
                     <button class="gallery-item-remove" onclick="removeGalleryItem(${index})">🗑️ Eliminar</button>
                 </div>
@@ -785,6 +823,50 @@ function updateGalleryCounts() {
     
     if (photoCountElement) photoCountElement.textContent = photoCount;
     if (videoCountElement) videoCountElement.textContent = videoCount;
+}
+
+function validateVideoDuration(videoFile) {
+    return new Promise((resolve) => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        
+        video.onloadedmetadata = () => {
+            // Clean up
+            URL.revokeObjectURL(video.src);
+            
+            // Check if duration is valid (max 60 seconds)
+            const isValid = video.duration <= 60;
+            resolve(isValid);
+        };
+        
+        video.onerror = () => {
+            // If we can't load metadata, assume it's valid
+            URL.revokeObjectURL(video.src);
+            resolve(true);
+        };
+        
+        // Set source and load metadata
+        video.src = URL.createObjectURL(videoFile);
+    });
+}
+
+function showFileInfo(photos, videos) {
+    if (photos.length > 0 || videos.length > 0) {
+        let message = 'Archivos agregados:\n';
+        
+        photos.forEach(photo => {
+            const sizeMB = Math.round(photo.size / 1024 / 1024 * 100) / 100;
+            message += `📸 ${photo.name} (${sizeMB}MB)\n`;
+        });
+        
+        videos.forEach(video => {
+            const sizeMB = Math.round(video.size / 1024 / 1024 * 100) / 100;
+            message += `🎥 ${video.name} (${sizeMB}MB)\n`;
+        });
+        
+        // Show success message
+        showSuccess(`${photos.length} foto(s) y ${videos.length} video(s) agregados correctamente`);
+    }
 }
 
 function setupGallery() {
