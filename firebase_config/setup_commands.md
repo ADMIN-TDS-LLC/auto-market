@@ -19,6 +19,19 @@ firebase deploy --only firestore:rules
 
 # Storage rules  
 firebase deploy --only storage
+
+# Verificar reglas activas
+firebase firestore:rules:get
+firebase storage:rules:get
+```
+
+## Configurar Storage para galería de vehículos
+```bash
+# Crear estructura de carpetas en Storage
+# vehicles/{vehicleId}/gallery/ (para fotos y videos)
+# advertisements/{adId}/ (para banners publicitarios)
+# users/{userId}/profile/ (para fotos de perfil)
+# temp/{userId}/ (para archivos temporales)
 ```
 
 ## Importar datos iniciales (después de configurar)

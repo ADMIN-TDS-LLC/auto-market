@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Setup advertising system
         setupAdvertisingForms();
         
+        // Clear cache if needed
+        clearCacheIfNeeded();
+        
         // Hide loading screen
         setTimeout(() => {
             hideLoading();
@@ -884,7 +887,7 @@ function setupPublishForm() {
 }
 
 // Form submission handler
-function handlePublishVehicle(event) {
+async function handlePublishVehicle(event) {
     event.preventDefault();
     
     if (!isAuthenticated) {
@@ -916,13 +919,26 @@ function handlePublishVehicle(event) {
         status: 'active'
     };
     
-    // Simulate upload process
-    showSuccess('¡Vehículo publicado exitosamente!');
-    showSection('explore');
-    
-    // TODO: Upload files to Firebase Storage and save vehicle data to Firestore
-    console.log('Vehicle data:', vehicleData);
-    console.log('Selected files:', selectedFiles);
+    // Upload to Firebase Storage and Firestore
+    try {
+        const vehicleId = await publishVehicleWithStorage(vehicleData, selectedFiles);
+        console.log('Vehicle published with ID:', vehicleId);
+        
+        showSuccess('¡Vehículo publicado exitosamente!');
+        showSection('explore');
+        
+        // Reset form
+        document.getElementById('publish-vehicle-form').reset();
+        selectedFiles = [];
+        updateGalleryPreview();
+        updateGalleryCounts();
+        
+        // Reload marketplace feed
+        loadMarketplaceFeed();
+    } catch (error) {
+        console.error('Error publishing vehicle:', error);
+        showError('Error al publicar el vehículo. Intenta nuevamente.');
+    }
 }
 
 // Publication Management Functions
@@ -1408,6 +1424,138 @@ window.selectPlan = selectPlan;
 window.processPayment = processPayment;
 
 window.closeModal = closeModal;
+
+// Cache Management Functions
+function clearCacheIfNeeded() {
+    // Check if we need to clear cache (for development or updates)
+    const lastClearVersion = localStorage.getItem('lastCacheClear');
+    const currentVersion = '1.2.0';
+    
+    if (lastClearVersion !== currentVersion) {
+        clearAllCaches();
+        localStorage.setItem('lastCacheClear', currentVersion);
+    }
+}
+
+function clearAllCaches() {
+    if ('caches' in window) {
+        caches.keys().then((cacheNames) => {
+            cacheNames.forEach((cacheName) => {
+                caches.delete(cacheName);
+                console.log('Cache cleared:', cacheName);
+            });
+        });
+    }
+    
+    // Clear service worker cache
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => {
+                registration.unregister();
+                console.log('Service Worker unregistered');
+            });
+        });
+    }
+    
+    // Force reload
+    setTimeout(() => {
+        window.location.reload(true);
+    }, 1000);
+}
+
+window.clearAllCaches = clearAllCaches;
+
+// Firebase Storage Functions
+async function uploadVehicleGallery(vehicleId, files) {
+    try {
+        const storage = firebase.storage();
+        const uploadPromises = [];
+        
+        files.forEach((file, index) => {
+            const fileName = `${file.type.startsWith('image/') ? 'photo' : 'video'}_${index + 1}_${Date.now()}`;
+            const storageRef = storage.ref(`vehicles/${vehicleId}/gallery/${fileName}`);
+            
+            const uploadPromise = storageRef.put(file)
+                .then((snapshot) => {
+                    return snapshot.ref.getDownloadURL();
+                });
+            
+            uploadPromises.push(uploadPromise);
+        });
+        
+        const downloadURLs = await Promise.all(uploadPromises);
+        return downloadURLs;
+    } catch (error) {
+        console.error('Error uploading gallery:', error);
+        throw error;
+    }
+}
+
+async function uploadAdvertisementBanner(adId, bannerFile) {
+    try {
+        const storage = firebase.storage();
+        const fileName = `banner_${Date.now()}.${bannerFile.name.split('.').pop()}`;
+        const storageRef = storage.ref(`advertisements/${adId}/banner_${fileName}`);
+        
+        const snapshot = await storageRef.put(bannerFile);
+        const downloadURL = await snapshot.ref.getDownloadURL();
+        
+        return downloadURL;
+    } catch (error) {
+        console.error('Error uploading banner:', error);
+        throw error;
+    }
+}
+
+async function deleteVehicleGallery(vehicleId, fileUrls) {
+    try {
+        const storage = firebase.storage();
+        const deletePromises = fileUrls.map(url => {
+            const fileRef = storage.refFromURL(url);
+            return fileRef.delete();
+        });
+        
+        await Promise.all(deletePromises);
+    } catch (error) {
+        console.error('Error deleting gallery:', error);
+        throw error;
+    }
+}
+
+// Updated publish vehicle function with Storage integration
+async function publishVehicleWithStorage(vehicleData, galleryFiles) {
+    try {
+        // First, create the vehicle document in Firestore
+        const db = firebase.firestore();
+        const vehicleRef = await db.collection('vehicles').add({
+            ...vehicleData,
+            sellerId: currentUser.uid,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'active'
+        });
+        
+        // Then upload gallery files if any
+        if (galleryFiles && galleryFiles.length > 0) {
+            const galleryURLs = await uploadVehicleGallery(vehicleRef.id, galleryFiles);
+            
+            // Update vehicle document with gallery URLs
+            await vehicleRef.update({
+                gallery: galleryURLs
+            });
+        }
+        
+        return vehicleRef.id;
+    } catch (error) {
+        console.error('Error publishing vehicle:', error);
+        throw error;
+    }
+}
+
+window.uploadVehicleGallery = uploadVehicleGallery;
+window.uploadAdvertisementBanner = uploadAdvertisementBanner;
+window.deleteVehicleGallery = deleteVehicleGallery;
+window.publishVehicleWithStorage = publishVehicleWithStorage;
+
 window.handleSignOut = handleSignOut;
 window.showLoginForm = showLogin;
 window.handleLogin = handleLogin;

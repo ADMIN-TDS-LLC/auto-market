@@ -1,5 +1,5 @@
-// AutoMarket Service Worker - Versión optimizada sin errores
-const CACHE_NAME = 'automarket-v1.1.0';
+// AutoMarket Service Worker - Versión mejorada sin errores
+const CACHE_NAME = 'automarket-v1.2.0';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -46,10 +46,30 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Función para validar si un request es cacheable
+function isCacheableRequest(request) {
+  // Solo cachear requests HTTP/HTTPS
+  if (!request.url.startsWith('http')) return false;
+  
+  // No cachear extensiones de Chrome
+  if (request.url.includes('chrome-extension')) return false;
+  
+  // No cachear data URLs
+  if (request.url.startsWith('data:')) return false;
+  
+  // No cachear blob URLs
+  if (request.url.startsWith('blob:')) return false;
+  
+  // Solo cachear GET requests
+  if (request.method !== 'GET') return false;
+  
+  return true;
+}
+
 // Interceptar requests
 self.addEventListener('fetch', (event) => {
-  // Solo interceptar requests GET
-  if (event.request.method !== 'GET') {
+  // Solo procesar requests cacheables
+  if (!isCacheableRequest(event.request)) {
     return;
   }
   
@@ -68,13 +88,21 @@ self.addEventListener('fetch', (event) => {
             return response;
           }
           
-          // Clonar la respuesta para el cache
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
+          // Solo cachear si el request es válido
+          if (isCacheableRequest(event.request)) {
+            // Clonar la respuesta para el cache
+            const responseToCache = response.clone();
+            
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache).catch(error => {
+                  console.log('Service Worker: Error al cachear:', error);
+                });
+              })
+              .catch(error => {
+                console.log('Service Worker: Error al abrir cache:', error);
+              });
+          }
           
           return response;
         });

@@ -1,58 +1,140 @@
 rules_version = '2';
+
+// 🚗 AUTOMARKET - REGLAS DE FIRESTORE
+// Configuración para vehículos, publicidad y usuarios
+
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Users collection - solo el dueño puede leer/escribir sus datos
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
+    // ==========================================
+    // 🚗 VEHÍCULOS
+    // ==========================================
     
-    // Contacts collection - solo usuarios verificados pueden leer contactos
-    match /contacts/{contactId} {
-      allow read: if request.auth != null && 
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isVerifiedPayment == true;
-      allow write: if request.auth != null && request.auth.uid == contactId;
-    }
-    
-    // Vehicles collection
     match /vehicles/{vehicleId} {
-      // Lectura pública solo si está activo
-      allow read: if resource.data.status == 'active';
-      // Solo el dueño puede crear/editar/eliminar
-      allow create: if request.auth != null && 
-        request.auth.uid == request.resource.data.ownerId &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isVerifiedPayment == true;
-      allow update, delete: if request.auth != null && 
-        request.auth.uid == resource.data.ownerId;
+      // Permitir lectura a todos (para marketplace público)
+      allow read: if true;
+      
+      // Permitir escritura solo al propietario
+      allow create: if request.auth != null 
+                   && request.auth.uid == resource.data.sellerId;
+      
+      allow update: if request.auth != null 
+                   && request.auth.uid == resource.data.sellerId
+                   && request.resource.data.keys().hasAll(['title', 'price', 'brand', 'model', 'year', 'location']);
+      
+      allow delete: if request.auth != null 
+                   && request.auth.uid == resource.data.sellerId;
     }
     
-    // Favorites collection
+    // ==========================================
+    // 📢 PUBLICIDAD
+    // ==========================================
+    
+    match /advertisements/{adId} {
+      // Permitir lectura a todos (para mostrar anuncios)
+      allow read: if true;
+      
+      // Permitir escritura solo al anunciante autenticado
+      allow create: if request.auth != null 
+                   && request.auth.uid == request.resource.data.advertiserId
+                   && request.resource.data.keys().hasAll(['companyName', 'adTitle', 'plan', 'status']);
+      
+      allow update: if request.auth != null 
+                   && request.auth.uid == resource.data.advertiserId;
+      
+      allow delete: if request.auth != null 
+                   && request.auth.uid == resource.data.advertiserId;
+    }
+    
+    // ==========================================
+    // 👤 USUARIOS
+    // ==========================================
+    
+    match /users/{userId} {
+      // Permitir lectura solo al propio usuario
+      allow read: if request.auth != null 
+                 && request.auth.uid == userId;
+      
+      // Permitir escritura solo al propio usuario
+      allow write: if request.auth != null 
+                  && request.auth.uid == userId;
+    }
+    
+    // ==========================================
+    // 💬 MENSAJES/CONTACTOS
+    // ==========================================
+    
+    match /messages/{messageId} {
+      // Permitir lectura solo a participantes del mensaje
+      allow read: if request.auth != null 
+                 && (request.auth.uid == resource.data.senderId 
+                     || request.auth.uid == resource.data.receiverId);
+      
+      // Permitir escritura solo al remitente
+      allow create: if request.auth != null 
+                   && request.auth.uid == request.resource.data.senderId;
+      
+      // Permitir actualización solo para marcar como leído
+      allow update: if request.auth != null 
+                   && request.auth.uid == resource.data.receiverId
+                   && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']);
+    }
+    
+    // ==========================================
+    // ⭐ FAVORITOS
+    // ==========================================
+    
     match /favorites/{favoriteId} {
-      allow read, write: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
+      // Permitir lectura solo al usuario propietario
+      allow read: if request.auth != null 
+                 && request.auth.uid == resource.data.userId;
+      
+      // Permitir escritura solo al usuario propietario
+      allow write: if request.auth != null 
+                  && request.auth.uid == request.resource.data.userId;
     }
     
-    // Reports collection
-    match /reports/{reportId} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null;
-    }
+    // ==========================================
+    // 📊 ESTADÍSTICAS (solo lectura)
+    // ==========================================
     
-    // Ads collection - solo lectura pública
-    match /ads/{adId} {
+    match /stats/{statId} {
+      // Permitir lectura a todos (estadísticas públicas)
       allow read: if true;
-      allow write: if request.auth != null && 
-        exists(/databases/$(database)/documents/appSettings/admins) &&
-        request.auth.uid in get(/databases/$(database)/documents/appSettings/admins).data.adminIds;
+      
+      // Solo funciones de backend pueden escribir estadísticas
+      allow write: if false;
     }
     
-    // App settings - lectura pública, escritura solo admins
-    match /appSettings/{settingId} {
+    // ==========================================
+    // 🚨 CONFIGURACIÓN DE LA APP
+    // ==========================================
+    
+    match /app-config/{configId} {
+      // Permitir lectura a todos
       allow read: if true;
-      allow write: if request.auth != null && 
-        exists(/databases/$(database)/documents/appSettings/admins) &&
-        request.auth.uid in get(/databases/$(database)/documents/appSettings/admins).data.adminIds;
+      
+      // Solo administradores pueden modificar configuración
+      allow write: if request.auth != null 
+                  && request.auth.token.admin == true;
+    }
+    
+    // ==========================================
+    // 🚨 REGLAS DE SEGURIDAD
+    // ==========================================
+    
+    // Denegar acceso a cualquier otra colección
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
+
+// 📝 NOTAS DE SEGURIDAD:
+// 1. ✅ Validación de campos requeridos
+// 2. ✅ Verificación de propiedad de documentos
+// 3. ✅ Separación por funcionalidad
+// 4. ✅ Reglas específicas para cada tipo de dato
+// 5. ✅ Protección de datos sensibles de usuarios
+// 6. ✅ Estadísticas públicas pero configuración protegida
+// 7. ✅ Denegación por defecto para colecciones no definidas
