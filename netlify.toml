@@ -18,11 +18,7 @@
   to = "/assets/:splat"
   status = 200
 
-[[redirects]]
-  # Serve service worker directly
-  from = "/sw.js"
-  to = "/sw.js"
-  status = 200
+# Service Worker redirects REMOVIDOS - causaba problemas de cache
 
 [[redirects]]
   # Handle client-side routing for everything else
@@ -39,12 +35,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-[[headers]]
-  # PWA headers
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-    Service-Worker-Allowed = "/"
+# PWA Service Worker headers REMOVIDOS - causaba problemas de cache
 
 [[headers]]
   # JavaScript files headers

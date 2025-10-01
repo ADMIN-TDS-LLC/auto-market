@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Setup authentication forms
         setupAuthForms();
         
-        // Setup PWA install prompt
-        setupPWAInstallPrompt();
+        // PWA install prompt DESACTIVADO (Service Worker bloqueaba actualizaciones)
+        // setupPWAInstallPrompt();
         
         // Setup gallery and publish form
         setupGallery();
@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Setup advertising system
         setupAdvertisingForms();
         
-        // Clear cache if needed
-        clearCacheIfNeeded();
+        // Cache management DESACTIVADO (Service Worker bloqueaba actualizaciones)
+        // clearCacheIfNeeded();
         
         // Hide loading screen
         setTimeout(() => {
@@ -1437,33 +1437,10 @@ function clearCacheIfNeeded() {
     }
 }
 
-function clearAllCaches() {
-    if ('caches' in window) {
-        caches.keys().then((cacheNames) => {
-            cacheNames.forEach((cacheName) => {
-                caches.delete(cacheName);
-                console.log('Cache cleared:', cacheName);
-            });
-        });
-    }
-    
-    // Clear service worker cache
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then((registrations) => {
-            registrations.forEach((registration) => {
-                registration.unregister();
-                console.log('Service Worker unregistered');
-            });
-        });
-    }
-    
-    // Force reload
-    setTimeout(() => {
-        window.location.reload(true);
-    }, 1000);
-}
+// Service Worker functions REMOVIDAS - causaban problemas de cache
+// function clearAllCaches() { ... }
 
-window.clearAllCaches = clearAllCaches;
+// window.clearAllCaches = clearAllCaches; // REMOVIDO
 
 // Firebase Storage Functions
 async function uploadVehicleGallery(vehicleId, files) {
@@ -1568,77 +1545,78 @@ window.toggleMenu = toggleMenu;
 window.closeMenu = closeMenu;
 
 // PWA Install Prompt
-let deferredPrompt;
+// PWA functions REMOVIDAS - causaban problemas de cache
+// let deferredPrompt;
 
-function setupPWAInstallPrompt() {
-    // Listen for the beforeinstallprompt event
-    window.addEventListener('beforeinstallprompt', (e) => {
-        console.log('PWA install prompt available');
-        // Prevent the mini-infobar from appearing on mobile
-        e.preventDefault();
-        // Stash the event so it can be triggered later
-        deferredPrompt = e;
-        // Show install button/banner
-        showInstallBanner();
-    });
+// function setupPWAInstallPrompt() {
+//     // Listen for the beforeinstallprompt event
+//     window.addEventListener('beforeinstallprompt', (e) => {
+//         console.log('PWA install prompt available');
+//         // Prevent the mini-infobar from appearing on mobile
+//         e.preventDefault();
+//         // Stash the event so it can be triggered later
+//         deferredPrompt = e;
+//         // Show install button/banner
+//         showInstallBanner();
+//     });
 
-    // Listen for the appinstalled event
-    window.addEventListener('appinstalled', () => {
-        console.log('PWA was installed');
-        hideInstallBanner();
-        deferredPrompt = null;
-    });
-}
+//     // Listen for the appinstalled event
+//     window.addEventListener('appinstalled', () => {
+//         console.log('PWA was installed');
+//         hideInstallBanner();
+//         deferredPrompt = null;
+//     });
+// }
 
-function showInstallBanner() {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        return; // Already installed
-    }
+// function showInstallBanner() {
+//     // Check if already installed
+//     if (window.matchMedia('(display-mode: standalone)').matches) {
+//         return; // Already installed
+//     }
 
-    // Create install banner
-    const banner = document.createElement('div');
-    banner.id = 'install-banner';
-    banner.innerHTML = `
-        <div class="install-banner">
-            <div class="install-content">
-                <div class="install-icon">📱</div>
-                <div class="install-text">
-                    <strong>Instalar AutoMarket</strong>
-                    <p>Agregá AutoMarket a tu pantalla de inicio para un acceso rápido</p>
-                </div>
-                <button class="install-btn" onclick="installPWA()">Instalar</button>
-                <button class="install-close" onclick="hideInstallBanner()">×</button>
-            </div>
-        </div>
-    `;
+//     // Create install banner
+//     const banner = document.createElement('div');
+//     banner.id = 'install-banner';
+//     banner.innerHTML = `
+//         <div class="install-banner">
+//             <div class="install-content">
+//                 <div class="install-icon">📱</div>
+//                 <div class="install-text">
+//                     <strong>Instalar AutoMarket</strong>
+//                     <p>Agregá AutoMarket a tu pantalla de inicio para un acceso rápido</p>
+//                 </div>
+//                 <button class="install-btn" onclick="installPWA()">Instalar</button>
+//                 <button class="install-close" onclick="hideInstallBanner()">×</button>
+//             </div>
+//         </div>
+//     `;
     
-    document.body.appendChild(banner);
-}
+//     document.body.appendChild(banner);
+// }
 
-function hideInstallBanner() {
-    const banner = document.getElementById('install-banner');
-    if (banner) {
-        banner.remove();
-    }
-}
+// function hideInstallBanner() {
+//     const banner = document.getElementById('install-banner');
+//     if (banner) {
+//         banner.remove();
+//     }
+// }
 
-function installPWA() {
-    if (deferredPrompt) {
-        // Show the install prompt
-        deferredPrompt.prompt();
-        // Wait for the user to respond to the prompt
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the install prompt');
-            } else {
-                console.log('User dismissed the install prompt');
-            }
-            deferredPrompt = null;
-        });
-    }
-}
+// function installPWA() {
+//     if (deferredPrompt) {
+//         // Show the install prompt
+//         deferredPrompt.prompt();
+//         // Wait for the user to respond to the prompt
+//         deferredPrompt.userChoice.then((choiceResult) => {
+//             if (choiceResult.outcome === 'accepted') {
+//                 console.log('User accepted the install prompt');
+//             } else {
+//                 console.log('User dismissed the install prompt');
+//             }
+//             deferredPrompt = null;
+//         });
+//     }
+// }
 
-// Global functions for PWA
-window.installPWA = installPWA;
-window.hideInstallBanner = hideInstallBanner;
+// Global functions for PWA REMOVIDAS
+// window.installPWA = installPWA;
+// window.hideInstallBanner = hideInstallBanner;

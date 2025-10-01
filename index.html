@@ -907,18 +907,26 @@
     <!-- App Script -->
     <script type="module" src="app.js"></script>
     
-    <!-- PWA service worker registration -->
+    <!-- PWA Service Worker DESACTIVADO - Bloqueaba actualizaciones -->
     <script>
+        // Desregistrar Service Worker si existe (igual que agarch-ar.com)
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('Service Worker desactivado');
+                }
             });
+            
+            // Limpiar cache del Service Worker
+            if ('caches' in window) {
+                caches.keys().then(function(cacheNames) {
+                    cacheNames.forEach(function(cacheName) {
+                        caches.delete(cacheName);
+                        console.log('Cache limpiado:', cacheName);
+                    });
+                });
+            }
         }
     </script>
 </body>
