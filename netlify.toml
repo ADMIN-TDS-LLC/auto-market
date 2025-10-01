@@ -38,18 +38,16 @@
 # PWA Service Worker headers REMOVIDOS - causaba problemas de cache
 
 [[headers]]
-  # JavaScript files headers
+  # JavaScript files headers - Cache disabled for development
   for = "*.js"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-    Content-Type = "application/javascript"
+    Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
-  # CSS files headers
+  # CSS files headers - Cache disabled for development  
   for = "*.css"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-    Content-Type = "text/css"
+    Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
   # Images headers
