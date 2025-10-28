@@ -232,31 +232,35 @@
                                 <option value="COP">COP</option>
                                 <option value="BRL">BRL</option>
                             </select>
-                    <select id="country" class="filter-select">
-                        <option value="">País</option>
-                        <option value="AR">🇦🇷 Argentina</option>
-                        <option value="MX">🇲🇽 México</option>
-                        <option value="BR">🇧🇷 Brasil</option>
-                        <option value="CO">🇨🇴 Colombia</option>
-                        <option value="CL">🇨🇱 Chile</option>
-                        <option value="PE">🇵🇪 Perú</option>
-                        <option value="UY">🇺🇾 Uruguay</option>
-                        <option value="PY">🇵🇾 Paraguay</option>
-                        <option value="BO">🇧🇴 Bolivia</option>
-                        <option value="EC">🇪🇨 Ecuador</option>
-                        <option value="VE">🇻🇪 Venezuela</option>
-                        <option value="GT">🇬🇹 Guatemala</option>
-                        <option value="HN">🇭🇳 Honduras</option>
-                        <option value="SV">🇸🇻 El Salvador</option>
-                        <option value="NI">🇳🇮 Nicaragua</option>
-                        <option value="CR">🇨🇷 Costa Rica</option>
-                        <option value="PA">🇵🇦 Panamá</option>
-                        <option value="CU">🇨🇺 Cuba</option>
-                        <option value="DO">🇩🇴 República Dominicana</option>
-                        <option value="HT">🇭🇹 Haití</option>
-                        <option value="PR">🇵🇷 Puerto Rico</option>
-                        <option value="US">🇺🇸 Estados Unidos</option>
-                    </select>
+                            <select id="country" class="filter-select">
+                                <option value="">País</option>
+                                <option value="AR">🇦🇷 Argentina</option>
+                                <option value="MX">🇲🇽 México</option>
+                                <option value="BR">🇧🇷 Brasil</option>
+                                <option value="CO">🇨🇴 Colombia</option>
+                                <option value="CL">🇨🇱 Chile</option>
+                                <option value="PE">🇵🇪 Perú</option>
+                                <option value="UY">🇺🇾 Uruguay</option>
+                                <option value="PY">🇵🇾 Paraguay</option>
+                                <option value="BO">🇧🇴 Bolivia</option>
+                                <option value="EC">🇪🇨 Ecuador</option>
+                                <option value="VE">🇻🇪 Venezuela</option>
+                                <option value="GT">🇬🇹 Guatemala</option>
+                                <option value="HN">🇭🇳 Honduras</option>
+                                <option value="SV">🇸🇻 El Salvador</option>
+                                <option value="NI">🇳🇮 Nicaragua</option>
+                                <option value="CR">🇨🇷 Costa Rica</option>
+                                <option value="PA">🇵🇦 Panamá</option>
+                                <option value="CU">🇨🇺 Cuba</option>
+                                <option value="DO">🇩🇴 República Dominicana</option>
+                                <option value="HT">🇭🇹 Haití</option>
+                                <option value="PR">🇵🇷 Puerto Rico</option>
+                                <option value="US">🇺🇸 Estados Unidos</option>
+                            </select>
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn btn-secondary" onclick="clearFilters()">Limpiar Filtros</button>
+                            <button class="btn btn-primary" onclick="applyFilters()">Aplicar Filtros</button>
                         </div>
                     </div>
 
@@ -886,17 +890,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     
     <!-- Firebase Config -->
-    <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDD4fjIFgwm2F0jBmmQgyGjZsH0UYIYu4",
-            authDomain: "automarket-pro.firebaseapp.com",
-            projectId: "automarket-pro",
-            storageBucket: "automarket-pro.firebasestorage.app",
-            messagingSenderId: "774835684971",
-            appId: "1:774835684971:web:594a1d583731cd6748932e"
-        };
-
+    <script type="module">
+        import { firebaseConfig } from './firebase-public-config.js';
+        
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -905,7 +901,7 @@
     </script>
     
     <!-- App Script -->
-    <script type="module" src="app.js"></script>
+    <script src="app.js"></script>
     
     <!-- PWA Service Worker DESACTIVADO - Bloqueaba actualizaciones -->
     <script>
