@@ -895,9 +895,16 @@
         
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        
+        // Make auth, db, and storage globally accessible
+        window.auth = firebase.auth();
+        window.db = firebase.firestore();
+        window.storage = firebase.storage();
+        
+        // Also assign to const for module scope
+        const auth = window.auth;
+        const db = window.db;
+        const storage = window.storage;
     </script>
     
     <!-- App Script -->
