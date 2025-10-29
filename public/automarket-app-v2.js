@@ -1672,3 +1672,4 @@ window.closeMenu = closeMenu;
 // Global functions for PWA REMOVIDAS
 // window.installPWA = installPWA;
 // window.hideInstallBanner = hideInstallBanner;
+   // Version 2.0.1
