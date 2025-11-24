@@ -1676,4 +1676,5 @@ window.closeMenu = closeMenu;
 
 // Global functions for PWA REMOVIDAS
 // window.installPWA = installPWA;
-// window.hideInstallBanner = hideInstallBanner;// Build version 2.0.1
+// window.hideInstallBanner = hideInstallBanner;
+// Build version 2.0.2 - Feed movido al HOME
