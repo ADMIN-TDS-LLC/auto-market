@@ -110,6 +110,11 @@ function showSection(sectionName) {
     
     // Close mobile menu if open
     closeMenu();
+    
+    // Load marketplace feed when showing home section
+    if (sectionName === 'home') {
+        loadMarketplaceFeed();
+    }
 }
 
 // Vehicle Functions
@@ -977,7 +982,7 @@ async function handlePublishVehicle(event) {
         console.log('Vehicle published with ID:', vehicleId);
         
         showSuccess('¡Vehículo publicado exitosamente!');
-        showSection('explore');
+        showSection('home');
         
         // Reset form
         document.getElementById('publish-vehicle-form').reset();
@@ -1671,5 +1676,4 @@ window.closeMenu = closeMenu;
 
 // Global functions for PWA REMOVIDAS
 // window.installPWA = installPWA;
-// window.hideInstallBanner = hideInstallBanner;
-   // Version 2.0.1
+// window.hideInstallBanner = hideInstallBanner;// Build version 2.0.1
