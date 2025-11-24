@@ -137,13 +137,13 @@
                     </div>
                     
                     <div class="quick-actions">
-                        <button class="action-btn primary" onclick="showSection('explore')">
-                            <span>🚗</span>
-                            <span>Explorar Vehículos</span>
-                        </button>
-                        <button class="action-btn secondary" onclick="showSection('publish')">
+                        <button class="action-btn primary" onclick="showSection('publish')">
                             <span>📝</span>
                             <span>Publicar Vehículo</span>
+                        </button>
+                        <button class="action-btn secondary" onclick="showSection('profile')">
+                            <span>👤</span>
+                            <span>Mi Perfil</span>
                         </button>
                     </div>
 
@@ -164,13 +164,10 @@
                             <p>Soporte para todas las monedas LATAM</p>
                         </div>
                     </div>
-                </section>
 
-                <!-- Explore Section - Marketplace Feed -->
-                <section id="explore-section" class="section">
                     <!-- Marketplace Header -->
                     <div class="marketplace-header">
-                        <h2>Buscar Vehículos</h2>
+                        <h2>Vehículos Disponibles</h2>
                         <div class="location-bar">
                             <span class="location-icon">📍</span>
                             <span class="location-text">Derqui, Buenos Aires, Argentina</span>
@@ -270,10 +267,22 @@
                     </div>
                 </section>
 
+                <!-- Explore Section - Redirige a Home -->
+                <section id="explore-section" class="section">
+                    <div class="hero">
+                        <h2>Búsqueda Avanzada</h2>
+                        <p>Usá los filtros en la página principal para buscar vehículos</p>
+                        <button class="action-btn primary" onclick="showSection('home')">
+                            <span>🏠</span>
+                            <span>Volver al Inicio</span>
+                        </button>
+                    </div>
+                </section>
+
                 <!-- Vehicle Detail Section -->
                 <section id="vehicle-detail-section" class="section">
                     <div class="vehicle-detail-header">
-                        <button class="back-btn" onclick="showSection('explore')">← Volver</button>
+                        <button class="back-btn" onclick="showSection('home')">← Volver</button>
                         <h2>Detalle del Vehículo</h2>
                     </div>
                     
